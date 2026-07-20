@@ -146,4 +146,17 @@ export class ParkingSlotRepository {
 
     }
 
+    /**
+ * Save multiple slots.
+ */
+    async saveMany(
+        slots: ParkingSlot[],
+    ): Promise<ParkingSlot[]> {
+
+
+        return this.repository.save(
+            slots,
+        );
+
+    }
 }

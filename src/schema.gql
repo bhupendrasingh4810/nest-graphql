@@ -12,6 +12,11 @@ input CloseTicketInput {
   ticketId: Int!
 }
 
+input CreateFloorInput {
+  floorNumber: Int!
+  parkingLotId: Int!
+}
+
 input CreateParkingLotInput {
   address: String!
   city: String!
@@ -22,6 +27,11 @@ input CreateParkingLotInput {
   name: String!
   postalCode: String!
   state: String!
+}
+
+input CreateSlotInput {
+  floorId: Int!
+  slotNumber: String!
 }
 
 input CreateTicketInput {
@@ -48,15 +58,27 @@ input LoginInput {
 
 type Mutation {
   closeTicket(input: CloseTicketInput!): ParkingTicket!
+  createParkingFloor(input: CreateFloorInput!): ParkingFloor!
   createParkingLot(input: CreateParkingLotInput!): ParkingLot!
+  createParkingSlot(input: CreateSlotInput!): ParkingSlot!
   createTicket(input: CreateTicketInput!): ParkingTicket!
   createUser(input: CreateUserInput!): User!
   deleteParkingLot(id: Int!): Boolean!
+  generateParkingSlots(count: Int!, floorId: Int!): [ParkingSlot!]!
   login(input: LoginInput!): AuthResponse!
   occupySlot(slotId: Int!): ParkingSlot!
   releaseSlot(slotId: Int!): ParkingSlot!
   signup(input: SignUpInput!): User!
   updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
+}
+
+type ParkingFloor {
+  createdAt: DateTime!
+  displayOrder: Int!
+  floorNumber: Int!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
 }
 
 type ParkingLot {

@@ -99,6 +99,15 @@ export class ParkingFloor {
     slots!: ParkingSlot[];
 
     /**
+ * Parent parking lot.
+ */
+    @ManyToOne(
+        () => ParkingLot,
+        lot => lot.floors,
+    )
+    lot!: ParkingLot;
+
+    /**
      * Created timestamp.
      */
     @Field()

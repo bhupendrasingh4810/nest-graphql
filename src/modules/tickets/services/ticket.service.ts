@@ -28,6 +28,7 @@ import {
 import {
     TicketStatus,
 } from '../enums/ticket-status.enum';
+import { ParkingService } from 'src/modules/parking/services/parking.service';
 
 
 
@@ -47,10 +48,17 @@ export class TicketService {
     constructor(
 
         /**
-         * Ticket database layer.
-         */
+     * Ticket database layer.
+     */
         private readonly ticketRepository:
             TicketRepository,
+
+
+        /**
+         * Parking slot management.
+         */
+        private readonly parkingService:
+            ParkingService
 
     ) { }
 
@@ -76,18 +84,22 @@ export class TicketService {
 
 
         /**
-         * Later:
+         * Find available slot.
          *
-         * Validate vehicle exists
-         *
-         * Validate slot exists
-         *
-         * Check slot available
+         * If user selected slot,
+         * use that slot.
          */
+        const slot =
+
+            await this.parkingService
+                .occupySlot(
+                    input.slotId,
+                );
+
 
 
         /**
-         * Generate unique ticket number.
+         * Generate ticket number.
          */
         const ticketNumber =
             this.generateTicketNumber();
@@ -95,20 +107,20 @@ export class TicketService {
 
 
         /**
-         * Create ticket object.
+         * Create ticket entity.
          */
         const ticket =
             new ParkingTicket();
+
 
 
         ticket.ticketNumber =
             ticketNumber;
 
 
+
         /**
-         * Temporary relation assignment.
-         *
-         * Later replaced by repositories.
+         * Assign vehicle.
          */
         ticket.vehicle = {
 
@@ -118,16 +130,15 @@ export class TicketService {
 
 
 
-        ticket.slot = {
-
-            id: input.slotId,
-
-        } as any;
+        /**
+         * Assign occupied slot.
+         */
+        ticket.slot = slot;
 
 
 
         /**
-         * Ticket starts now.
+         * Entry timestamp.
          */
         ticket.entryTime =
             new Date();
@@ -135,14 +146,14 @@ export class TicketService {
 
 
         /**
-         * Default amount.
+         * Initial amount.
          */
         ticket.amount = 0;
 
 
 
         /**
-         * Active ticket.
+         * Ticket active.
          */
         ticket.status =
             TicketStatus.ACTIVE;
@@ -154,7 +165,6 @@ export class TicketService {
         );
 
     }
-
 
 
 
@@ -239,9 +249,25 @@ export class TicketService {
 
 
 
-        return this.ticketRepository.save(
-            ticket,
+        const savedTicket =
+            await this.ticketRepository.save(
+                ticket,
+            );
+
+
+
+        /**
+         * Release parking slot.
+         */
+        await this.parkingService.releaseSlot(
+
+            ticket.slot.id,
+
         );
+
+
+
+        return savedTicket;
 
     }
 

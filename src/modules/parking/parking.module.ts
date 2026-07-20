@@ -9,6 +9,10 @@ import { ParkingService } from './services/parking.service';
 import { ParkingResolver } from './resolvers/parking.resolver';
 import { ParkingController } from './controllers/parking.controller';
 import { ParkingSlotRepository } from './repositories/parking-slot.repository';
+import { ParkingAdminService } from './services/parking-admin.service';
+import { ParkingFloorRepository } from './repositories/parking-floor.repository';
+import { ParkingAdminController } from './controllers/parking-admin.controller';
+import { ParkingAdminResolver } from './resolvers/parking-admin.resolver';
 
 @Module({
     imports: [
@@ -23,17 +27,22 @@ import { ParkingSlotRepository } from './repositories/parking-slot.repository';
         ]),
     ],
     controllers: [
-        ParkingController
+        ParkingController,
+        ParkingAdminController
     ],
     providers: [
         ParkingLotRepository,
         ParkingSlotRepository,
+        ParkingFloorRepository,
         ParkingService,
-        ParkingResolver
+        ParkingAdminService,
+        ParkingResolver,
+        ParkingAdminResolver
     ],
     exports: [
         // ParkingLotRepository,
-        ParkingService
+        ParkingService,
+        ParkingAdminService
     ]
 })
 export class ParkingModule { }

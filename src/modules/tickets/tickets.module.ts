@@ -5,12 +5,18 @@ import { TicketResolver } from './resolvers/ticket.resolver';
 import { TicketRepository } from './repositories/ticket.repository';
 import { TicketService } from './services/ticket.service';
 import { TicketController } from './controllers/ticket.controller';
+import { ParkingModule } from '../parking/parking.module';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             ParkingTicket,
         ]),
+        /**
+         * Allows TicketService
+         * to use ParkingService.
+         */
+        ParkingModule
     ],
     controllers: [
         TicketController
