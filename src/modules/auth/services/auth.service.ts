@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
@@ -16,6 +17,10 @@ import { SignUpInput } from '../dto/signup.input';
 import { AuthResponse } from '../graphql/auth-response.type';
 
 import { User } from '../../users/entities/user.entity';
+import { ChangePasswordDto } from '../dto/change-password.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { randomBytes } from 'crypto';
+import { ForgotPasswordDto } from '../dto/forgot-password.dto';
 
 /**
  * Authentication business logic.
@@ -188,6 +193,117 @@ export class AuthService {
         );
     }
 
+    async changePassword(
+        userId: number,
+        dto: ChangePasswordDto,
+    ): Promise<boolean> {
+
+        const user =
+            await this.usersService.findById(
+                userId,
+            );
+
+        if (!user) {
+            throw new BadRequestException(
+                'User not found',
+            );
+        }
+
+        const valid =
+            await bcrypt.compare(
+                dto.currentPassword,
+                user.password,
+            );
+
+        if (!valid) {
+            throw new UnauthorizedException(
+                'Current password is incorrect',
+            );
+        }
+
+        const hash =
+            await bcrypt.hash(
+                dto.newPassword,
+                10,
+            );
+
+        await this.usersService.update(
+            userId,
+            {
+                password: hash,
+            },
+        );
+        return true;
+    }
+    async forgotPassword(
+        dto: ForgotPasswordDto,
+    ): Promise<boolean> {
+        const user =
+            await this.usersService.findByEmail(
+                dto.email,
+            );
+        if (!user) {
+            return true;
+        }
+
+        const token = randomBytes(32).toString('hex');
+        await this.usersService.update(
+            user.id,
+            {
+                resetPasswordToken: token,
+                resetPasswordExpiresAt:
+
+                    new Date(
+                        Date.now()
+                        +
+                        15 * 60 * 1000
+                    ),
+            },
+        );
+        /**
+         * Email sending comes later.
+         *
+         * Send:
+         *
+         * /reset-password?token=xxxx
+         */
+        return true;
+    }
+
+    async resetPassword(
+        dto: ResetPasswordDto,
+    ): Promise<boolean> {
+        const user =
+            await this.usersService.findByResetToken(
+                dto.token,
+            );
+
+        if (
+            !user ||
+            !user.resetPasswordExpiresAt ||
+            user.resetPasswordExpiresAt < new Date()
+        ) {
+            throw new BadRequestException(
+                'Invalid or expired token',
+            );
+        }
+
+        const hash =
+            await bcrypt.hash(
+                dto.newPassword,
+                10,
+            );
+
+        await this.usersService.update(
+            user.id,
+            {
+                password: hash,
+                resetPasswordToken: undefined,
+                resetPasswordExpiresAt: undefined,
+            },
+        );
+        return true;
+    }
     /**
      * GraphQL login.
      *

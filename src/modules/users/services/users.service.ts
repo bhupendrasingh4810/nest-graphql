@@ -123,12 +123,18 @@ export class UsersService {
     }
 
     /**
-     * Update existing user.
+     * Update user.
      */
     async update(
-        user: User,
-    ): Promise<User> {
-        return this.userRepository.save(user);
+        id: number,
+        data: Partial<User>,
+    ): Promise<User | null> {
+
+        await this.userRepository.update(
+            id,
+            data,
+        );
+        return this.findById(id);
     }
 
     /**
@@ -138,5 +144,18 @@ export class UsersService {
         id: number,
     ): Promise<void> {
         await this.userRepository.delete(id);
+    }
+
+    /**
+ * Find user using password reset token.
+ */
+    async findByResetToken(
+        token: string,
+    ): Promise<User | null> {
+        return this.userRepository.findOne({
+            where: {
+                resetPasswordToken: token,
+            },
+        });
     }
 }

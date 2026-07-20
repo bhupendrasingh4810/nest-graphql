@@ -106,16 +106,23 @@ export class User {
     })
     isEmailVerified!: boolean;
 
-    // bidirectional relationship between User and Vehicle. While that's valid, exposing every relationship in GraphQL can easily create cyclic object graphs (for example, User → Vehicle → User → Vehicle...) and unnecessary queries.
     /**
- * Vehicles owned by the user.
- */
-    // @Field(() => [Vehicle])
-    // @OneToMany(
-    //     () => Vehicle,
-    //     (vehicle: Vehicle) => vehicle.owner,
-    // )
-    // vehicles!: Vehicle[];
+     * Password reset token.
+     *
+     * Used for forgot password flow.
+     */
+    @Column({
+        nullable: true,
+    })
+    resetPasswordToken?: string;
+
+    /**
+     * Reset token expiry time.
+     */
+    @Column({
+        nullable: true,
+    })
+    resetPasswordExpiresAt?: Date;
 
     /**
      * Last successful login.
