@@ -8,6 +8,9 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { HealthModule } from './modules/health/health.module';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
+import { ParkingModule } from './modules/parking/parking.module';
 
 @Module({
   imports: [
@@ -27,7 +30,10 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     HealthModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    ParkingModule,
+    VehiclesModule,
+    TicketsModule
   ],
   controllers: [],
   providers: [],

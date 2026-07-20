@@ -29,7 +29,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
 
             database: this.configService.get<string>('DATABASE_NAME'),
 
-            // Automatically load all entities registered with TypeOrmModule.forFeature()
+            // Automatically only loads entities registered with TypeOrmModule.forFeature()
             autoLoadEntities: true,
 
             // Only for development

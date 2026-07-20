@@ -7,6 +7,18 @@ type AuthResponse {
   refreshToken: String!
 }
 
+input CreateParkingLotInput {
+  address: String!
+  city: String!
+  code: String!
+  country: String!
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  postalCode: String!
+  state: String!
+}
+
 input CreateUserInput {
   email: String!
   fullName: String!
@@ -25,14 +37,54 @@ input LoginInput {
 }
 
 type Mutation {
+  createParkingLot(input: CreateParkingLotInput!): ParkingLot!
   createUser(input: CreateUserInput!): User!
+  deleteParkingLot(id: Int!): Boolean!
   login(input: LoginInput!): AuthResponse!
+  updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
+}
+
+type ParkingLot {
+  address: String!
+  city: String!
+  code: String!
+  country: String!
+  createdAt: DateTime!
+  id: ID!
+  latitude: Float!
+  longitude: Float!
+  name: String!
+  postalCode: String!
+  state: String!
+  status: ParkingLotStatus!
+  updatedAt: DateTime!
+}
+
+enum ParkingLotStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
 }
 
 type Query {
   """Returns application health status."""
   health: String!
+  parkingLot(id: Int!): ParkingLot!
+  parkingLots: [ParkingLot!]!
   users: [User!]!
+}
+
+input UpdateParkingLotInput {
+  address: String
+  city: String
+  code: String
+  country: String
+  id: Int!
+  latitude: Float
+  longitude: Float
+  name: String
+  postalCode: String
+  state: String
 }
 
 type User {

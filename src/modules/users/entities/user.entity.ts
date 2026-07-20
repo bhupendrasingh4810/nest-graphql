@@ -2,6 +2,7 @@ import {
     Column,
     CreateDateColumn,
     Entity,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +15,7 @@ import {
 
 import { UserRole } from '../enums/user-role.enum';
 import { UserStatus } from '../enums/user-status.enum';
+import { Vehicle } from 'src/modules/vehicles/entities/vehicle.entity';
 
 /**
  * Marks this class as a database table.
@@ -103,6 +105,17 @@ export class User {
         default: false,
     })
     isEmailVerified!: boolean;
+
+    // bidirectional relationship between User and Vehicle. While that's valid, exposing every relationship in GraphQL can easily create cyclic object graphs (for example, User → Vehicle → User → Vehicle...) and unnecessary queries.
+    /**
+ * Vehicles owned by the user.
+ */
+    // @Field(() => [Vehicle])
+    // @OneToMany(
+    //     () => Vehicle,
+    //     (vehicle: Vehicle) => vehicle.owner,
+    // )
+    // vehicles!: Vehicle[];
 
     /**
      * Last successful login.
