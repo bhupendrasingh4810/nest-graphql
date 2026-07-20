@@ -70,6 +70,7 @@ type Mutation {
   releaseSlot(slotId: Int!): ParkingSlot!
   signup(input: SignUpInput!): User!
   updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
+  updateProfile(input: UpdateProfileInput!): User!
 }
 
 type ParkingFloor {
@@ -148,6 +149,7 @@ type Query {
 
   """Returns application health status."""
   health: String!
+  me: User!
   parkingLot(id: Int!): ParkingLot!
   parkingLots: [ParkingLot!]!
   ticket(id: Int!): ParkingTicket
@@ -179,6 +181,11 @@ input UpdateParkingLotInput {
   state: String
 }
 
+input UpdateProfileInput {
+  fullName: String
+  phone: String
+}
+
 type User {
   createdAt: DateTime!
   email: String!
@@ -186,6 +193,7 @@ type User {
   id: ID!
   isEmailVerified: Boolean!
   lastLoginAt: DateTime
+  phone: String
   role: UserRole!
   status: UserStatus!
   updatedAt: DateTime!

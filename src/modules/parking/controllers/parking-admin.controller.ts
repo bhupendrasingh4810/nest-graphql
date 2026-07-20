@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Post,
+    UseGuards,
 } from '@nestjs/common';
 
 
@@ -23,6 +24,10 @@ import {
 import {
     CreateSlotInput,
 } from '../dto/create-parking-slot.input';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { UserRole } from 'src/modules/users/enums/user-role.enum';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 
 
@@ -31,6 +36,13 @@ import {
  */
 @Controller(
     'admin/parking',
+)
+@UseGuards(
+    JwtAuthGuard,
+    RolesGuard,
+)
+@Roles(
+    UserRole.ADMIN,
 )
 export class ParkingAdminController {
 

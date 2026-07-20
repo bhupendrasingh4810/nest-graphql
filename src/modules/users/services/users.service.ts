@@ -1,6 +1,7 @@
 import {
     ConflictException,
     Injectable,
+    NotFoundException,
 } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
@@ -137,6 +138,45 @@ export class UsersService {
         return this.findById(id);
     }
 
+    async updateProfile(
+
+        id: number,
+
+        data: Partial<User>,
+
+    ): Promise<User> {
+
+
+
+        const user =
+            await this.findById(
+                id,
+            );
+
+
+
+        if (!user) {
+
+            throw new NotFoundException(
+                'User not found',
+            );
+
+        }
+
+
+
+        Object.assign(
+            user,
+            data,
+        );
+
+
+
+        return this.userRepository.save(
+            user,
+        );
+
+    }
     /**
      * Delete user.
      */

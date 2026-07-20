@@ -13,6 +13,8 @@ import { ParkingAdminService } from './services/parking-admin.service';
 import { ParkingFloorRepository } from './repositories/parking-floor.repository';
 import { ParkingAdminController } from './controllers/parking-admin.controller';
 import { ParkingAdminResolver } from './resolvers/parking-admin.resolver';
+import { ParkingQueryService } from './services/parking-query.service';
+import { ParkingQueryResolver } from './resolvers/parking-query.resolver';
 
 @Module({
     imports: [
@@ -36,8 +38,10 @@ import { ParkingAdminResolver } from './resolvers/parking-admin.resolver';
         ParkingFloorRepository,
         ParkingService,
         ParkingAdminService,
+        ParkingQueryService,
         ParkingResolver,
-        ParkingAdminResolver
+        ParkingAdminResolver,
+        ParkingQueryResolver
     ],
     exports: [
         // ParkingLotRepository,

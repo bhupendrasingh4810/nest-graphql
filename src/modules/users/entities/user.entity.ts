@@ -106,6 +106,14 @@ export class User {
     })
     isEmailVerified!: boolean;
 
+    @Field({
+        nullable: true,
+    })
+    @Column({
+        nullable: true,
+    })
+    phone?: string;
+
     /**
      * Password reset token.
      *
