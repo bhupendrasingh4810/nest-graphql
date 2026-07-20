@@ -5,6 +5,7 @@
 type AuthResponse {
   accessToken: String!
   refreshToken: String!
+  user: User!
 }
 
 input CreateParkingLotInput {
@@ -41,6 +42,7 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteParkingLot(id: Int!): Boolean!
   login(input: LoginInput!): AuthResponse!
+  signup(input: SignUpInput!): User!
   updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
 }
 
@@ -72,6 +74,12 @@ type Query {
   parkingLot(id: Int!): ParkingLot!
   parkingLots: [ParkingLot!]!
   users: [User!]!
+}
+
+input SignUpInput {
+  email: String!
+  fullName: String!
+  password: String!
 }
 
 input UpdateParkingLotInput {

@@ -11,6 +11,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { TicketsModule } from './modules/tickets/tickets.module';
 import { ParkingModule } from './modules/parking/parking.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -36,6 +38,11 @@ import { ParkingModule } from './modules/parking/parking.module';
     TicketsModule
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    }
+  ],
 })
 export class AppModule { }

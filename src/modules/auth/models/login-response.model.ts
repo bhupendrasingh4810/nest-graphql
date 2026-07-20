@@ -6,28 +6,21 @@ import {
 import { User } from '../../users/entities/user.entity';
 
 /**
- * Authentication response.
- *
- * Returned after successful login.
+ * Login response.
  */
 @ObjectType()
-export class AuthResponse {
+export class LoginResponse {
 
     /**
-     * JWT access token.
+     * JWT Access Token.
      */
     @Field()
     accessToken!: string;
-
-    /**
-     * JWT refresh token.
-     */
-    @Field()
-    refreshToken!: string;
 
     /**
      * Logged in user.
      */
     @Field(() => User)
     user!: User;
+
 }

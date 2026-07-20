@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { UsersService } from './services/users.service';
 import { UsersResolver } from './resolvers/users.resolvers';
 import { UsersController } from './controllers/users.controller';
+import { UserRepository } from './repositories/user.repository';
 
 /**
  * Registers User entity with TypeORM.
@@ -24,6 +25,7 @@ import { UsersController } from './controllers/users.controller';
     providers: [
         UsersService,
         UsersResolver,
+        UserRepository
     ],
 
     /**
@@ -32,6 +34,7 @@ import { UsersController } from './controllers/users.controller';
      */
     exports: [
         UsersService,
+        UserRepository
     ],
 })
 export class UsersModule { }

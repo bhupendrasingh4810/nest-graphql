@@ -9,7 +9,7 @@ import {
 import { AuthService } from '../services/auth.service';
 
 import { LoginDto } from '../dto/login.dto';
-import { SignUpDto } from '../dto/signup.dto';
+import { SignUpInput } from '../dto/signup.input';
 
 /**
  * REST Authentication Controller
@@ -32,7 +32,7 @@ export class AuthController {
      */
     @Post('signup')
     async signup(
-        @Body() dto: SignUpDto,
+        @Body() dto: SignUpInput,
     ) {
         return this.authService.signup(dto);
     }

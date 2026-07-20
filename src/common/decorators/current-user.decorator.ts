@@ -2,6 +2,7 @@ import {
     createParamDecorator,
     ExecutionContext,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 /**
  * Custom decorator.
@@ -24,12 +25,8 @@ export const CurrentUser =
             /**
              * Get Express request.
              */
-            const request =
-                context.switchToHttp().getRequest();
+            const ctx = GqlExecutionContext.create(context);
 
-            /**
-             * Return authenticated user.
-             */
-            return request.user;
+            return ctx.getContext().req.user;
         },
     );

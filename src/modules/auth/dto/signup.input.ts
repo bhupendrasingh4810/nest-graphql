@@ -1,3 +1,4 @@
+import { Field, InputType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 /**
@@ -5,10 +6,12 @@ import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-valid
  *
  * POST /api/auth/signup
  */
-export class SignUpDto {
+@InputType() // Registers class as a GraphQL Input Type
+export class SignUpInput {
     /**
      * Full name of the user.
      */
+    @Field()
     @IsString()
     @IsNotEmpty()
     @MaxLength(100)
@@ -17,6 +20,7 @@ export class SignUpDto {
     /**
      * Email address.
      */
+    @Field()
     @IsEmail()
     email!: string;
 
@@ -26,6 +30,7 @@ export class SignUpDto {
      * Password will be hashed
      * before storing in database.
      */
+    @Field()
     @IsString()
     @MinLength(8)
     @MaxLength(100)

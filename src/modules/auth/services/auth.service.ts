@@ -11,11 +11,25 @@ import { UsersService } from '../../users/services/users.service';
 
 import { LoginDto } from '../dto/login.dto';
 import { LoginInput } from '../dto/login.input';
-import { SignUpDto } from '../dto/signup.dto';
+import { SignUpInput } from '../dto/signup.input';
 
 import { AuthResponse } from '../graphql/auth-response.type';
+
 import { User } from '../../users/entities/user.entity';
 
+/**
+ * Authentication business logic.
+ *
+ * Handles:
+ *
+ * - Signup
+ * - Login
+ * - Password verification
+ * - JWT generation
+ *
+ * Both REST and GraphQL
+ * use this same service.
+ */
 @Injectable()
 export class AuthService {
     constructor(
@@ -23,7 +37,6 @@ export class AuthService {
          * Users business layer.
          */
         private readonly usersService: UsersService,
-
         /**
          * JWT helper.
          */
@@ -33,39 +46,64 @@ export class AuthService {
     /**
      * Register new user.
      *
-     * Both REST and GraphQL
-     * will call this method.
+     * Flow:
+     *
+     * Request
+     *    |
+     * AuthService
+     *    |
+     * Hash Password
+     *    |
+     * UsersService
+     *    |
+     * Database
      */
     async signup(
-        dto: SignUpDto,
+        dto: SignUpInput,
     ): Promise<User> {
+
+        /**
+         * Hash password before storing.
+         *
+         * Never store plain passwords.
+         */
+        const hashedPassword =
+            await bcrypt.hash(
+                dto.password,
+                10,
+            );
+
+        /**
+         * Create user.
+         */
         return this.usersService.create({
             fullName: dto.fullName,
             email: dto.email,
-            password: dto.password,
+            password: hashedPassword,
         });
     }
 
     /**
-     * Main authentication method.
+     * Common authentication method.
      *
-     * ALL login requests
-     * should eventually reach here.
-     *
-     * No duplicated logic.
+     * Both REST login and GraphQL login
+     * call this method.
      */
     async authenticate(
         email: string,
         password: string,
     ): Promise<AuthResponse> {
-        /**
-         * Find user.
-         */
-        const user =
-            await this.usersService.findByEmail(email);
 
         /**
-         * User not found.
+         * Find user by email.
+         */
+        const user =
+            await this.usersService.findByEmail(
+                email,
+            );
+
+        /**
+         * User does not exist.
          */
         if (!user) {
             throw new UnauthorizedException(
@@ -74,7 +112,8 @@ export class AuthService {
         }
 
         /**
-         * Verify password.
+         * Compare entered password
+         * with stored hash.
          */
         const isPasswordValid =
             await bcrypt.compare(
@@ -82,6 +121,9 @@ export class AuthService {
                 user.password,
             );
 
+        /**
+         * Password mismatch.
+         */
         if (!isPasswordValid) {
             throw new UnauthorizedException(
                 'Invalid email or password.',
@@ -89,9 +131,11 @@ export class AuthService {
         }
 
         /**
-         * JWT Payload.
+         * JWT payload.
          *
-         * Never include password.
+         * Never add:
+         *
+         * password
          */
         const payload = {
             sub: user.id,
@@ -100,16 +144,19 @@ export class AuthService {
         };
 
         /**
-         * Create Access Token.
+         * Generate access token.
          */
         const accessToken =
-            await this.jwtService.signAsync(payload);
+            await this.jwtService.signAsync(
+                payload,
+            );
 
         /**
-         * Create Refresh Token.
+         * Generate refresh token.
          *
-         * Later we'll store its hash
-         * in the database.
+         * Later:
+         * - Store hash in database
+         * - Add revoke support
          */
         const refreshToken =
             await this.jwtService.signAsync(
@@ -122,15 +169,19 @@ export class AuthService {
         return {
             accessToken,
             refreshToken,
+            user,
         };
     }
 
     /**
-     * REST Login.
+     * REST login.
+     *
+     * POST /auth/login
      */
     async login(
         dto: LoginDto,
     ): Promise<AuthResponse> {
+
         return this.authenticate(
             dto.email,
             dto.password,
@@ -138,11 +189,16 @@ export class AuthService {
     }
 
     /**
-     * GraphQL Login.
+     * GraphQL login.
+     *
+     * Mutation:
+     *
+     * login(input: LoginInput)
      */
     async graphqlLogin(
         input: LoginInput,
     ): Promise<AuthResponse> {
+
         return this.authenticate(
             input.email,
             input.password,
