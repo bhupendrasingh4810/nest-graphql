@@ -8,6 +8,10 @@ type AuthResponse {
   user: User!
 }
 
+input CloseTicketInput {
+  ticketId: Int!
+}
+
 input CreateParkingLotInput {
   address: String!
   city: String!
@@ -18,6 +22,11 @@ input CreateParkingLotInput {
   name: String!
   postalCode: String!
   state: String!
+}
+
+input CreateTicketInput {
+  slotId: Int!
+  vehicleId: Int!
 }
 
 input CreateUserInput {
@@ -38,7 +47,9 @@ input LoginInput {
 }
 
 type Mutation {
+  closeTicket(input: CloseTicketInput!): ParkingTicket!
   createParkingLot(input: CreateParkingLotInput!): ParkingLot!
+  createTicket(input: CreateTicketInput!): ParkingTicket!
   createUser(input: CreateUserInput!): User!
   deleteParkingLot(id: Int!): Boolean!
   login(input: LoginInput!): AuthResponse!
@@ -68,11 +79,25 @@ enum ParkingLotStatus {
   MAINTENANCE
 }
 
+type ParkingTicket {
+  amount: Float!
+  createdAt: DateTime!
+  duration: Float!
+  entryTime: DateTime!
+  exitTime: DateTime
+  id: ID!
+  status: TicketStatus!
+  ticketNumber: String!
+  totalAmount: Float!
+  updatedAt: DateTime!
+}
+
 type Query {
   """Returns application health status."""
   health: String!
   parkingLot(id: Int!): ParkingLot!
   parkingLots: [ParkingLot!]!
+  ticket(id: Int!): ParkingTicket
   users: [User!]!
 }
 
@@ -80,6 +105,12 @@ input SignUpInput {
   email: String!
   fullName: String!
   password: String!
+}
+
+enum TicketStatus {
+  ACTIVE
+  CANCELLED
+  COMPLETED
 }
 
 input UpdateParkingLotInput {

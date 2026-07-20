@@ -97,6 +97,17 @@ export class ParkingTicket {
     duration!: number;
 
     /**
+ * Default Amount
+ */
+    @Field(() => Float)
+    @Column({
+        type: 'decimal',
+        precision: 10,
+        scale: 2,
+        default: 0,
+    })
+    amount!: number;
+    /**
      * Parking fee.
      */
     @Field(() => Float)
