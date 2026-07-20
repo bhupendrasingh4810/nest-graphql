@@ -1,0 +1,60 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+input CreateUserInput {
+  email: String!
+  fullName: String!
+  password: String!
+  role: UserRole
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User!
+  login(input: LoginInput!): AuthResponse!
+}
+
+type Query {
+  """Returns application health status."""
+  health: String!
+  users: [User!]!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  fullName: String!
+  id: ID!
+  isEmailVerified: Boolean!
+  lastLoginAt: DateTime
+  role: UserRole!
+  status: UserStatus!
+  updatedAt: DateTime!
+}
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+  OPERATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  INACTIVE
+}
