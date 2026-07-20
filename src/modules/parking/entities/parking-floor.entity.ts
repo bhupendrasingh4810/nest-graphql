@@ -17,6 +17,7 @@ import {
 
 import { ParkingLot } from './parking-lot.entity';
 import { ParkingZone } from './parking-zone.entity';
+import { ParkingSlot } from './parking-slot.entity';
 
 /**
  * Represents one floor.
@@ -84,6 +85,18 @@ export class ParkingFloor {
         (zone: ParkingZone) => zone.floor,
     )
     zones!: ParkingZone[];
+
+    /**
+     * Floor contains many slots.
+     */
+    @OneToMany(
+
+        () => ParkingSlot,
+
+        slot => slot.floor,
+
+    )
+    slots!: ParkingSlot[];
 
     /**
      * Created timestamp.

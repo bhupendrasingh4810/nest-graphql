@@ -10,6 +10,9 @@ import { ParkingLotRepository } from '../repositories/parking-lot.repository';
 import { CreateParkingLotInput } from '../dto/create-parking-lot.input';
 
 import { UpdateParkingLotInput } from '../dto/update-parking-lot.input';
+import { ParkingSlotStatus } from '../enums/parking-slot-status.enum';
+import { ParkingSlotRepository } from '../repositories/parking-slot.repository';
+import { ParkingSlot } from '../entities/parking-slot.entity';
 
 /**
  * Parking business logic.
@@ -23,7 +26,7 @@ export class ParkingService {
          * Parking repository.
          */
         private readonly parkingLotRepository: ParkingLotRepository,
-
+        private readonly slotRepository: ParkingSlotRepository
     ) { }
 
     /**
@@ -132,4 +135,151 @@ export class ParkingService {
 
     }
 
+    /**
+     * Get available slots.
+     */
+    async getAvailableSlots()
+        : Promise<ParkingSlot[]> {
+
+
+        return this.slotRepository
+            .findAvailableSlots();
+
+    }
+
+
+
+    /**
+     * Occupy parking slot.
+     *
+     * Called when vehicle enters.
+     */
+    async occupySlot(
+
+        slotId: number,
+
+    ): Promise<ParkingSlot> {
+
+
+        const slot =
+            await this.slotRepository.findById(
+                slotId,
+            );
+
+
+        if (!slot) {
+
+            throw new NotFoundException(
+                'Parking slot not found',
+            );
+
+        }
+
+
+
+        /**
+         * Slot already occupied.
+         */
+        if (
+            slot.status ===
+            ParkingSlotStatus.OCCUPIED
+        ) {
+
+            throw new Error(
+                'Slot already occupied',
+            );
+
+        }
+
+
+
+        await this.slotRepository.updateStatus(
+
+            slotId,
+
+            ParkingSlotStatus.OCCUPIED,
+
+        );
+
+
+
+        slot.status =
+            ParkingSlotStatus.OCCUPIED;
+
+
+        return slot;
+
+    }
+
+
+
+
+    /**
+     * Release parking slot.
+     *
+     * Called after checkout.
+     */
+    async releaseSlot(
+
+        slotId: number,
+
+    ): Promise<ParkingSlot> {
+
+
+        const slot =
+            await this.slotRepository.findById(
+                slotId,
+            );
+
+
+        if (!slot) {
+
+            throw new NotFoundException(
+                'Parking slot not found',
+            );
+
+        }
+
+
+
+        await this.slotRepository.updateStatus(
+
+            slotId,
+
+            ParkingSlotStatus.AVAILABLE,
+
+        );
+
+
+
+        slot.status =
+            ParkingSlotStatus.AVAILABLE;
+
+
+
+        return slot;
+
+    }
+
+
+
+
+    /**
+     * Find nearest available slot.
+     */
+    async findNearestSlot()
+        : Promise<ParkingSlot | null> {
+
+
+        const slots =
+            await this.slotRepository
+                .findAvailableSlots();
+
+
+
+        return slots.length
+            ? slots[0]
+            : null;
+
+    }
 }

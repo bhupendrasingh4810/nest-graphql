@@ -143,7 +143,7 @@ export class ParkingLot {
      */
     @OneToMany(
         () => ParkingFloor,
-        (floor: ParkingFloor) => floor.parkingLot,
+        (floor: ParkingFloor) => floor,
     )
     floors!: ParkingFloor[];
 

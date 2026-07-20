@@ -8,6 +8,7 @@ import { ParkingLotRepository } from './repositories/parking-lot.repository';
 import { ParkingService } from './services/parking.service';
 import { ParkingResolver } from './resolvers/parking.resolver';
 import { ParkingController } from './controllers/parking.controller';
+import { ParkingSlotRepository } from './repositories/parking-slot.repository';
 
 @Module({
     imports: [
@@ -26,11 +27,12 @@ import { ParkingController } from './controllers/parking.controller';
     ],
     providers: [
         ParkingLotRepository,
+        ParkingSlotRepository,
         ParkingService,
         ParkingResolver
     ],
     exports: [
-        ParkingLotRepository,
+        // ParkingLotRepository,
         ParkingService
     ]
 })

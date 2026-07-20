@@ -53,6 +53,8 @@ type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteParkingLot(id: Int!): Boolean!
   login(input: LoginInput!): AuthResponse!
+  occupySlot(slotId: Int!): ParkingSlot!
+  releaseSlot(slotId: Int!): ParkingSlot!
   signup(input: SignUpInput!): User!
   updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
 }
@@ -79,6 +81,33 @@ enum ParkingLotStatus {
   MAINTENANCE
 }
 
+type ParkingSlot {
+  createdAt: DateTime!
+  hasChargingStation: Boolean!
+  id: ID!
+  isEnabled: Boolean!
+  maximumHeight: Float!
+  slotNumber: String!
+  status: ParkingSlotStatus!
+  type: ParkingSlotType!
+  updatedAt: DateTime!
+}
+
+enum ParkingSlotStatus {
+  AVAILABLE
+  MAINTENANCE
+  OCCUPIED
+  OUT_OF_SERVICE
+  RESERVED
+}
+
+enum ParkingSlotType {
+  BIKE
+  CAR
+  ELECTRIC
+  HANDICAPPED
+}
+
 type ParkingTicket {
   amount: Float!
   createdAt: DateTime!
@@ -93,6 +122,8 @@ type ParkingTicket {
 }
 
 type Query {
+  availableSlots: [ParkingSlot!]!
+
   """Returns application health status."""
   health: String!
   parkingLot(id: Int!): ParkingLot!

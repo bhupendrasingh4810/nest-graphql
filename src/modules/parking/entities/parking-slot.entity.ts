@@ -19,6 +19,7 @@ import { ParkingZone } from './parking-zone.entity';
 import { ParkingSlotStatus } from '../enums/parking-slot-status.enum';
 import { ParkingSlotType } from '../enums/parking-slot-type.enum';
 import { ParkingTicket } from 'src/modules/tickets/entities/parking-ticket.entity';
+import { ParkingFloor } from './parking-floor.entity';
 
 /**
  * Represents a single parking slot.
@@ -103,6 +104,21 @@ export class ParkingSlot {
     })
     maximumHeight!: number;
 
+    /**
+     * Floor relation.
+     */
+    @ManyToOne(
+
+        () => ParkingFloor,
+
+        floor => floor.slots,
+
+        {
+            nullable: false,
+        },
+
+    )
+    floor!: ParkingFloor;
     /**
      * Parent zone.
      */

@@ -13,6 +13,7 @@ import { ParkingService } from '../services/parking.service';
 import { CreateParkingLotInput } from '../dto/create-parking-lot.input';
 
 import { UpdateParkingLotInput } from '../dto/update-parking-lot.input';
+import { ParkingSlot } from '../entities/parking-slot.entity';
 
 /**
  * GraphQL Resolver for Parking Lot.
@@ -138,4 +139,86 @@ export class ParkingResolver {
 
     }
 
+    /**
+     * Get all available slots.
+     *
+     * Query:
+     *
+     * availableSlots
+     */
+    @Query(
+        () => [ParkingSlot],
+    )
+    async availableSlots()
+        : Promise<ParkingSlot[]> {
+
+
+        return this.parkingService
+            .getAvailableSlots();
+
+    }
+
+
+
+    /**
+     * Occupy slot.
+     *
+     * Mutation:
+     *
+     * occupySlot(slotId:1)
+     */
+    @Mutation(
+        () => ParkingSlot,
+    )
+    async occupySlot(
+
+        @Args(
+            'slotId',
+            {
+                type: () => Int,
+            },
+        )
+        slotId: number,
+
+    ): Promise<ParkingSlot> {
+
+
+        return this.parkingService
+            .occupySlot(
+                slotId,
+            );
+
+    }
+
+
+
+    /**
+     * Release slot.
+     *
+     * Mutation:
+     *
+     * releaseSlot(slotId:1)
+     */
+    @Mutation(
+        () => ParkingSlot,
+    )
+    async releaseSlot(
+
+        @Args(
+            'slotId',
+            {
+                type: () => Int,
+            },
+        )
+        slotId: number,
+
+    ): Promise<ParkingSlot> {
+
+
+        return this.parkingService
+            .releaseSlot(
+                slotId,
+            );
+
+    }
 }
