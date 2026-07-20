@@ -73,6 +73,11 @@ type Mutation {
   updateProfile(input: UpdateProfileInput!): User!
 }
 
+input ParkingFilterInput {
+  address: String
+  name: String
+}
+
 type ParkingFloor {
   createdAt: DateTime!
   displayOrder: Int!
@@ -150,8 +155,10 @@ type Query {
   """Returns application health status."""
   health: String!
   me: User!
+  parkingDashboard(id: Int!): String!
   parkingLot(id: Int!): ParkingLot!
   parkingLots: [ParkingLot!]!
+  parkingSearch(filter: ParkingFilterInput): [ParkingLot!]!
   ticket(id: Int!): ParkingTicket
   users: [User!]!
 }

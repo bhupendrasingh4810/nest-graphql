@@ -6,6 +6,7 @@ import { TicketRepository } from './repositories/ticket.repository';
 import { TicketService } from './services/ticket.service';
 import { TicketController } from './controllers/ticket.controller';
 import { ParkingModule } from '../parking/parking.module';
+import { PricingModule } from '../pricing/pricing.module';
 
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import { ParkingModule } from '../parking/parking.module';
          * Allows TicketService
          * to use ParkingService.
          */
-        ParkingModule
+        ParkingModule,
+        PricingModule
     ],
     controllers: [
         TicketController

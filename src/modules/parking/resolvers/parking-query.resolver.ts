@@ -14,6 +14,7 @@ import {
 import {
     ParkingLot,
 } from '../entities/parking-lot.entity';
+import { ParkingFilterInput } from '../dto/parking-filter.input';
 
 
 
@@ -41,10 +42,11 @@ export class ParkingQueryResolver {
         @Args(
             'filter',
             {
+                type: () => ParkingFilterInput,
                 nullable: true,
             },
         )
-        filter: any,
+        filter: ParkingFilterInput,
 
     ) {
 

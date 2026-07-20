@@ -29,6 +29,8 @@ import {
     TicketStatus,
 } from '../enums/ticket-status.enum';
 import { ParkingService } from 'src/modules/parking/services/parking.service';
+import { PricingService } from 'src/modules/pricing/services/pricing.service';
+import { VehicleType } from 'src/modules/vehicles/enums/vehicle-type.enum';
 
 
 
@@ -58,7 +60,14 @@ export class TicketService {
          * Parking slot management.
          */
         private readonly parkingService:
-            ParkingService
+            ParkingService,
+
+
+        /**
+         * Calculates parking charges.
+         */
+        private readonly pricingService:
+            PricingService,
 
     ) { }
 
@@ -184,86 +193,81 @@ export class TicketService {
     ): Promise<ParkingTicket> {
 
 
-        /**
-         * Find ticket.
-         */
+
         const ticket =
+
             await this.ticketRepository.findById(
+
                 input.ticketId,
+
             );
+
 
 
         if (!ticket) {
 
             throw new NotFoundException(
-                'Parking ticket not found.',
+                'Ticket not found',
             );
 
         }
 
 
 
-        /**
-         * Already closed.
-         */
-        if (
-            ticket.status !==
-            TicketStatus.ACTIVE
-        ) {
 
-            throw new BadRequestException(
-                'Ticket already closed.',
-            );
-
-        }
-
-
-
-        /**
-         * Set exit time.
-         */
-        ticket.exitTime =
-            new Date();
+        const exitTime = new Date();
 
 
 
         /**
          * Calculate amount.
          */
-        ticket.amount =
-            this.calculateAmount(
-
+        const amount = await this.pricingService
+            .calculateAmount(
+                ticket.vehicle.type as VehicleType,
                 ticket.entryTime,
-
-                ticket.exitTime,
+                exitTime,
 
             );
 
 
 
-        /**
-         * Mark completed.
-         */
+
+
+        ticket.exitTime =
+            exitTime;
+
+
+
+        ticket.amount =
+            amount;
+
+
+
         ticket.status =
             TicketStatus.COMPLETED;
 
 
 
+
         const savedTicket =
+
             await this.ticketRepository.save(
                 ticket,
             );
 
 
 
+
         /**
-         * Release parking slot.
+         * Free parking slot.
          */
         await this.parkingService.releaseSlot(
 
             ticket.slot.id,
 
         );
+
 
 
 
