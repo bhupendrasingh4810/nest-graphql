@@ -33,21 +33,13 @@ export class ParkingService {
      */
     const parkingLot = await this.parkingLotRepository.create({
       name: input.name,
-
       code: input.code,
-
       address: input.address,
-
       city: input.city,
-
       state: input.state,
-
       country: input.country,
-
       postalCode: input.postalCode,
-
       latitude: input.latitude,
-
       longitude: input.longitude,
     });
 

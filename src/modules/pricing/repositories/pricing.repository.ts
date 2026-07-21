@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { ParkingPrice } from '../entities/parking-price.entity';
 
@@ -15,7 +15,7 @@ export class PricingRepository {
     private readonly repository: Repository<ParkingPrice>,
   ) {}
 
-  async save(price: ParkingPrice): Promise<ParkingPrice> {
+  async save(price: DeepPartial<ParkingPrice>): Promise<ParkingPrice> {
     return this.repository.save(price);
   }
 

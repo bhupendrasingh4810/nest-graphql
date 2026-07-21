@@ -214,9 +214,7 @@ type Query {
   activeTickets: [ParkingTicket!]!
   availableSlots: [ParkingSlot!]!
 
-  """
-  Returns application health status.
-  """
+  """Returns application health status."""
   health: String!
   invoice(id: Int!): Invoice!
   invoiceByTicket(ticketId: Int!): Invoice!

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 
 import { ParkingSlot } from '../entities/parking-slot.entity';
 
@@ -72,7 +72,7 @@ export class ParkingSlotRepository {
   /**
    * Save slot.
    */
-  async save(slot: ParkingSlot): Promise<ParkingSlot> {
+  async save(slot: DeepPartial<ParkingSlot>): Promise<ParkingSlot> {
     return this.repository.save(slot);
   }
 
