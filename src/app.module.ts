@@ -19,10 +19,21 @@ import { InvoiceModule } from './modules/invoice/invoice.module';
 
 @Module({
   imports: [
+    // ThrottlerModule.forRoot({
+
+    //   ttl: 60000,
+
+    //   limit: 100
+
+    // }),
     ConfigModule.forRoot({
       // Make environment variables available throughout the application.
       isGlobal: true, // Register globally so we don't need to import ConfigModule in every module.
       cache: true,
+      // validationSchema: Joi.object({
+      //   DATABASE_URL: Joi.string().required(),
+      //   JWT_SECRET: Joi.string().required()
+      // })
     }),
     // Register PostgreSQL
     TypeOrmModule.forRootAsync({

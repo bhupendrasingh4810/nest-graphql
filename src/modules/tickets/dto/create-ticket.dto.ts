@@ -4,4 +4,4 @@
 
 import { CreateTicketInput } from './create-ticket.input';
 
-export class CreateTicketDto extends CreateTicketInput { }
+export class CreateTicketDto extends CreateTicketInput {}

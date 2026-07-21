@@ -12,6 +12,8 @@ import { TicketStatus } from '../enums/ticket-status.enum';
 import { ParkingService } from 'src/modules/parking/services/parking.service';
 import { PricingService } from 'src/modules/pricing/services/pricing.service';
 import { VehicleType } from 'src/modules/vehicles/enums/vehicle-type.enum';
+import { PaymentService } from 'src/modules/payment/services/payment.service';
+import { InvoiceService } from 'src/modules/invoice/services/invoice.service';
 
 /**
  * Ticket business logic.
@@ -39,7 +41,10 @@ export class TicketService {
      * Calculates parking charges.
      */
     private readonly pricingService: PricingService,
-  ) { }
+
+    private readonly paymentService: PaymentService,
+    private readonly invoiceService: InvoiceService,
+  ) {}
 
   /**
    * Create parking ticket.
@@ -143,6 +148,16 @@ export class TicketService {
      */
     await this.parkingService.releaseSlot(ticket.slot.id);
 
+    /**
+     * Create payment.
+     */
+    await this.paymentService.pay(savedTicket.id, savedTicket.amount);
+
+    /**
+     * Generate invoice.
+     */
+    await this.invoiceService.generate(savedTicket.id, savedTicket.amount);
+
     return savedTicket;
   }
 
@@ -189,8 +204,8 @@ export class TicketService {
   }
 
   /**
- * Get all parking tickets.
- */
+   * Get all parking tickets.
+   */
   async findAll(): Promise<ParkingTicket[]> {
     return this.ticketRepository.findAll();
   }
@@ -201,16 +216,11 @@ export class TicketService {
    * Throws exception if ticket
    * does not exist.
    */
-  async findOne(
-    id: number,
-  ): Promise<ParkingTicket> {
-    const ticket =
-      await this.ticketRepository.findById(id);
+  async findOne(id: number): Promise<ParkingTicket> {
+    const ticket = await this.ticketRepository.findById(id);
 
     if (!ticket) {
-      throw new NotFoundException(
-        'Ticket not found.',
-      );
+      throw new NotFoundException('Ticket not found.');
     }
 
     return ticket;
@@ -226,58 +236,35 @@ export class TicketService {
   /**
    * Get parking history of a vehicle.
    */
-  async findVehicleHistory(
-    vehicleId: number,
-  ): Promise<ParkingTicket[]> {
-    return this.ticketRepository.findVehicleHistory(
-      vehicleId,
-    );
+  async findVehicleHistory(vehicleId: number): Promise<ParkingTicket[]> {
+    return this.ticketRepository.findVehicleHistory(vehicleId);
   }
 
   /**
    * Cancel an active ticket.
    */
-  async cancelTicket(
-    ticketId: number,
-  ): Promise<ParkingTicket> {
-    const ticket =
-      await this.findOne(ticketId);
+  async cancelTicket(ticketId: number): Promise<ParkingTicket> {
+    const ticket = await this.findOne(ticketId);
 
-    if (
-      ticket.status !==
-      TicketStatus.ACTIVE
-    ) {
-      throw new BadRequestException(
-        'Only active tickets can be cancelled.',
-      );
+    if (ticket.status !== TicketStatus.ACTIVE) {
+      throw new BadRequestException('Only active tickets can be cancelled.');
     }
 
-    ticket.status =
-      TicketStatus.CANCELLED;
+    ticket.status = TicketStatus.CANCELLED;
 
-    ticket.exitTime =
-      new Date();
+    ticket.exitTime = new Date();
 
-    await this.parkingService.releaseSlot(
-      ticket.slot.id,
-    );
+    await this.parkingService.releaseSlot(ticket.slot.id);
 
-    return this.ticketRepository.save(
-      ticket,
-    );
+    return this.ticketRepository.save(ticket);
   }
 
   /**
    * Check whether vehicle
    * already has an active ticket.
    */
-  async hasActiveTicket(
-    vehicleId: number,
-  ): Promise<boolean> {
-    const ticket =
-      await this.ticketRepository.findActiveByVehicle(
-        vehicleId,
-      );
+  async hasActiveTicket(vehicleId: number): Promise<boolean> {
+    const ticket = await this.ticketRepository.findActiveByVehicle(vehicleId);
 
     return !!ticket;
   }
@@ -286,11 +273,7 @@ export class TicketService {
    * Get active ticket
    * for a vehicle.
    */
-  async getActiveTicket(
-    vehicleId: number,
-  ): Promise<ParkingTicket | null> {
-    return this.ticketRepository.findActiveByVehicle(
-      vehicleId,
-    );
+  async getActiveTicket(vehicleId: number): Promise<ParkingTicket | null> {
+    return this.ticketRepository.findActiveByVehicle(vehicleId);
   }
 }

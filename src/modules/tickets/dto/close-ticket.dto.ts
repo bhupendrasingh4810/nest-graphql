@@ -4,4 +4,4 @@
 
 import { CloseTicketInput } from './close-ticket.input';
 
-export class CloseTicketDto extends CloseTicketInput { }
+export class CloseTicketDto extends CloseTicketInput {}

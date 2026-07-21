@@ -12,14 +12,12 @@ export class TicketRepository {
   constructor(
     @InjectRepository(ParkingTicket)
     private readonly repository: Repository<ParkingTicket>,
-  ) { }
+  ) {}
 
   /**
-     * Create / Update Ticket
-     */
-  async save(
-    ticket: ParkingTicket,
-  ): Promise<ParkingTicket> {
+   * Create / Update Ticket
+   */
+  async save(ticket: ParkingTicket): Promise<ParkingTicket> {
     return this.repository.save(ticket);
   }
 
@@ -45,9 +43,7 @@ export class TicketRepository {
   /**
    * Find ticket by id.
    */
-  async findById(
-    id: number,
-  ): Promise<ParkingTicket | null> {
+  async findById(id: number): Promise<ParkingTicket | null> {
     return this.repository.findOne({
       where: {
         id,
@@ -66,9 +62,7 @@ export class TicketRepository {
   /**
    * Find ticket by ticket number.
    */
-  async findByTicketNumber(
-    ticketNumber: string,
-  ): Promise<ParkingTicket | null> {
+  async findByTicketNumber(ticketNumber: string): Promise<ParkingTicket | null> {
     return this.repository.findOne({
       where: {
         ticketNumber,
@@ -109,9 +103,7 @@ export class TicketRepository {
   /**
    * Find active ticket of vehicle.
    */
-  async findActiveByVehicle(
-    vehicleId: number,
-  ): Promise<ParkingTicket | null> {
+  async findActiveByVehicle(vehicleId: number): Promise<ParkingTicket | null> {
     return this.repository.findOne({
       where: {
         vehicle: {
@@ -133,9 +125,7 @@ export class TicketRepository {
   /**
    * Parking history of vehicle.
    */
-  async findVehicleHistory(
-    vehicleId: number,
-  ): Promise<ParkingTicket[]> {
+  async findVehicleHistory(vehicleId: number): Promise<ParkingTicket[]> {
     return this.repository.find({
       where: {
         vehicle: {
@@ -159,9 +149,7 @@ export class TicketRepository {
   /**
    * Delete ticket.
    */
-  async delete(
-    id: number,
-  ): Promise<DeleteResult> {
+  async delete(id: number): Promise<DeleteResult> {
     return this.repository.delete(id);
   }
 
@@ -197,10 +185,7 @@ export class TicketRepository {
       },
     });
 
-    return tickets.reduce(
-      (sum, ticket) => sum + Number(ticket.amount),
-      0,
-    );
+    return tickets.reduce((sum, ticket) => sum + Number(ticket.amount), 0);
   }
 
   /**
@@ -218,49 +203,28 @@ export class TicketRepository {
       .where('ticket.status = :status', {
         status: TicketStatus.COMPLETED,
       })
-      .andWhere(
-        'ticket.exitTime BETWEEN :start AND :end',
-        {
-          start,
-          end,
-        },
-      )
+      .andWhere('ticket.exitTime BETWEEN :start AND :end', {
+        start,
+        end,
+      })
       .getMany();
 
-    return tickets.reduce(
-      (sum, ticket) => sum + Number(ticket.amount),
-      0,
-    );
+    return tickets.reduce((sum, ticket) => sum + Number(ticket.amount), 0);
   }
 
   /**
    * Find tickets between dates.
    */
-  async findBetweenDates(
-    startDate: Date,
-    endDate: Date,
-  ): Promise<ParkingTicket[]> {
+  async findBetweenDates(startDate: Date, endDate: Date): Promise<ParkingTicket[]> {
     return this.repository
       .createQueryBuilder('ticket')
-      .leftJoinAndSelect(
-        'ticket.vehicle',
-        'vehicle',
-      )
-      .leftJoinAndSelect(
-        'ticket.slot',
-        'slot',
-      )
-      .where(
-        'ticket.entryTime BETWEEN :startDate AND :endDate',
-        {
-          startDate,
-          endDate,
-        },
-      )
-      .orderBy(
-        'ticket.entryTime',
-        'DESC',
-      )
+      .leftJoinAndSelect('ticket.vehicle', 'vehicle')
+      .leftJoinAndSelect('ticket.slot', 'slot')
+      .where('ticket.entryTime BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      })
+      .orderBy('ticket.entryTime', 'DESC')
       .getMany();
   }
 }

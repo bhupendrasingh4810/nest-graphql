@@ -2,6 +2,7 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { PaymentService } from '../services/payment.service';
 import { Payment } from '../entities/payment.entity';
+import { CreatePaymentInput } from '../dto/create-payment.input';
 
 @Resolver(() => Payment)
 export class PaymentResolver {
@@ -39,5 +40,29 @@ export class PaymentResolver {
   @Query(() => [Payment])
   async payments(): Promise<Payment[]> {
     return this.paymentService.findAll();
+  }
+
+  @Query(() => Payment)
+  paymentByTicket(
+    @Args('ticketId', { type: () => Int })
+    ticketId: number,
+  ): Promise<Payment> {
+    return this.paymentService.findByTicket(ticketId);
+  }
+
+  @Mutation(() => Payment)
+  createPayment(
+    @Args('input')
+    input: CreatePaymentInput,
+  ): Promise<Payment> {
+    return this.paymentService.pay(input.ticketId, input.amount);
+  }
+
+  @Mutation(() => Boolean)
+  deletePayment(
+    @Args('id', { type: () => Int })
+    id: number,
+  ): Promise<boolean> {
+    return this.paymentService.delete(id);
   }
 }

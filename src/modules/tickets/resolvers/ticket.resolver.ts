@@ -25,7 +25,7 @@ export class TicketResolver {
      * Ticket business layer.
      */
     private readonly ticketService: TicketService,
-  ) { }
+  ) {}
 
   /**
    * Create parking ticket.
@@ -101,9 +101,7 @@ export class TicketResolver {
     })
     vehicleId: number,
   ) {
-    return this.ticketService.findVehicleHistory(
-      vehicleId,
-    );
+    return this.ticketService.findVehicleHistory(vehicleId);
   }
 
   @Query(() => [ParkingTicket])

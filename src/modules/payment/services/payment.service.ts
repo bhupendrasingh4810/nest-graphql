@@ -1,47 +1,67 @@
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+// ============================================================================
+// src/modules/payment/services/payment.service.ts
+// ============================================================================
+
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { PaymentRepository } from '../repositories/payment.repository';
+
 import { Payment } from '../entities/payment.entity';
+
 import { PaymentStatus } from '../enums/payment-status.enum';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PaymentService {
-  constructor(@InjectRepository(Payment) private readonly repository: Repository<Payment>) {}
+  constructor(private readonly paymentRepository: PaymentRepository) {}
 
-  async pay(
-    ticketId: number,
-
-    amount: number,
-  ) {
+  async pay(ticketId: number, amount: number): Promise<Payment> {
     const payment = new Payment();
 
     payment.ticketId = ticketId;
-
     payment.amount = amount;
 
     /**
-     * In real world:
-     *
-     * Razorpay
-     * Stripe
-     * PayPal
-     *
-     * integration here.
+     * Replace with
+     * Razorpay / Stripe later.
      */
     payment.status = PaymentStatus.SUCCESS;
 
-    return this.repository.save(payment);
-  }
-
-  async findById(id: number): Promise<Payment | null> {
-    return this.repository.findOne({
-      where: {
-        id,
-      },
-    });
+    return this.paymentRepository.save(payment);
   }
 
   async findAll(): Promise<Payment[]> {
-    return this.repository.find();
+    return this.paymentRepository.findAll();
+  }
+
+  async findOne(id: number): Promise<Payment> {
+    const payment = await this.paymentRepository.findById(id);
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found.');
+    }
+
+    return payment;
+  }
+
+  async findById(id: number): Promise<Payment | null> {
+    return this.findOne(id);
+  }
+
+  async findByTicket(ticketId: number): Promise<Payment> {
+    const payment = await this.paymentRepository.findByTicket(ticketId);
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found.');
+    }
+
+    return payment;
+  }
+
+  async delete(id: number): Promise<boolean> {
+    await this.findOne(id);
+
+    await this.paymentRepository.delete(id);
+
+    return true;
   }
 }
