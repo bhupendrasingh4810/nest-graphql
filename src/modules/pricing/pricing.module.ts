@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ParkingPrice } from "./entities/parking-price.entity";
 import { PricingService } from "./services/pricing.service";
 import { PricingRepository } from "./repositories/pricing.repository";
+import { PricingResolver } from "./resolvers/pricing.resolver";
 
 @Module({
     imports: [
@@ -13,7 +14,8 @@ import { PricingRepository } from "./repositories/pricing.repository";
     controllers: [],
     providers: [
         PricingService,
-        PricingRepository
+        PricingRepository,
+        PricingResolver
     ],
     exports: [
         PricingService

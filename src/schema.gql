@@ -29,6 +29,11 @@ input CreateParkingLotInput {
   state: String!
 }
 
+input CreatePriceInput {
+  hourlyRate: Float!
+  vehicleType: VehicleType!
+}
+
 input CreateSlotInput {
   floorId: Int!
   slotNumber: String!
@@ -61,11 +66,13 @@ type Mutation {
   createParkingFloor(input: CreateFloorInput!): ParkingFloor!
   createParkingLot(input: CreateParkingLotInput!): ParkingLot!
   createParkingSlot(input: CreateSlotInput!): ParkingSlot!
+  createPricing(input: CreatePriceInput!): ParkingPrice!
   createTicket(input: CreateTicketInput!): ParkingTicket!
   createUser(input: CreateUserInput!): User!
   deleteParkingLot(id: Int!): Boolean!
   generateParkingSlots(count: Int!, floorId: Int!): [ParkingSlot!]!
   login(input: LoginInput!): AuthResponse!
+  makePayment(amount: Float!, ticketId: Int!): Payment!
   occupySlot(slotId: Int!): ParkingSlot!
   releaseSlot(slotId: Int!): ParkingSlot!
   signup(input: SignUpInput!): User!
@@ -109,6 +116,13 @@ enum ParkingLotStatus {
   MAINTENANCE
 }
 
+type ParkingPrice {
+  active: Boolean!
+  hourlyRate: Float!
+  id: ID!
+  vehicleType: VehicleType!
+}
+
 type ParkingSlot {
   createdAt: DateTime!
   hasChargingStation: Boolean!
@@ -149,6 +163,19 @@ type ParkingTicket {
   updatedAt: DateTime!
 }
 
+type Payment {
+  amount: Float!
+  id: ID!
+  status: PaymentStatus!
+  ticketId: Float!
+}
+
+enum PaymentStatus {
+  FAILED
+  PENDING
+  SUCCESS
+}
+
 type Query {
   availableSlots: [ParkingSlot!]!
 
@@ -159,6 +186,8 @@ type Query {
   parkingLot(id: Int!): ParkingLot!
   parkingLots: [ParkingLot!]!
   parkingSearch(filter: ParkingFilterInput): [ParkingLot!]!
+  payment(id: Int!): Payment
+  payments: [Payment!]!
   ticket(id: Int!): ParkingTicket
   users: [User!]!
 }
@@ -216,4 +245,13 @@ enum UserStatus {
   ACTIVE
   BLOCKED
   INACTIVE
+}
+
+enum VehicleType {
+  BIKE
+  BUS
+  CAR
+  ELECTRIC_CAR
+  SUV
+  TRUCK
 }

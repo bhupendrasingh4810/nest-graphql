@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Prefix all REST APIs with /api
   app.setGlobalPrefix('api');
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // Enable Cross-Origin Resource Sharing
   // Allows frontend applications (React, Next.js, Angular, etc.)

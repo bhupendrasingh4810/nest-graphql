@@ -14,6 +14,8 @@ import { ParkingModule } from './modules/parking/parking.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './common/guards/roles.guard';
 import { PricingModule } from './modules/pricing/pricing.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { InvoiceModule } from './modules/invoice/invoice.module';
 
 @Module({
   imports: [
@@ -36,8 +38,10 @@ import { PricingModule } from './modules/pricing/pricing.module';
     AuthModule,
     ParkingModule,
     VehiclesModule,
+    PricingModule,
+    PaymentModule,
+    InvoiceModule,
     TicketsModule,
-    PricingModule
   ],
   controllers: [],
   providers: [

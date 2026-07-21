@@ -7,6 +7,9 @@ import { TicketService } from './services/ticket.service';
 import { TicketController } from './controllers/ticket.controller';
 import { ParkingModule } from '../parking/parking.module';
 import { PricingModule } from '../pricing/pricing.module';
+import { VehiclesModule } from '../vehicles/vehicles.module';
+import { PaymentModule } from '../payment/payment.module';
+import { InvoiceModule } from '../invoice/invoice.module';
 
 @Module({
     imports: [
@@ -18,7 +21,10 @@ import { PricingModule } from '../pricing/pricing.module';
          * to use ParkingService.
          */
         ParkingModule,
-        PricingModule
+        PricingModule,
+        VehiclesModule,
+        PaymentModule,
+        InvoiceModule
     ],
     controllers: [
         TicketController

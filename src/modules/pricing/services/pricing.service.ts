@@ -14,6 +14,8 @@ import {
 } from '../repositories/pricing.repository';
 
 import { VehicleType } from 'src/modules/vehicles/enums/vehicle-type.enum';
+import { ParkingPrice } from '../entities/parking-price.entity';
+import { CreatePriceInput } from '../dto/create-price.input';
 
 
 
@@ -29,7 +31,15 @@ export class PricingService {
     ) { }
 
 
+    async create(input: CreatePriceInput): Promise<ParkingPrice> {
+        const price = new ParkingPrice();
 
+        price.vehicleType = input.vehicleType;
+        price.hourlyRate = input.hourlyRate;
+        price.active = true;
+
+        return this.repository.save(price);
+    }
 
 
     /**
