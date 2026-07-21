@@ -1,43 +1,15 @@
-import {
+import { Field, Float, InputType } from '@nestjs/graphql';
 
-    Field,
-
-    InputType,
-
-    Float,
-
-} from '@nestjs/graphql';
-
-
-import {
-
-    IsEnum,
-
-    IsNumber,
-
-} from 'class-validator';
+import { IsEnum, IsNumber } from 'class-validator';
 import { VehicleType } from 'src/modules/vehicles/enums/vehicle-type.enum';
-
 
 @InputType()
 export class CreatePriceInput {
+  @Field(() => VehicleType)
+  @IsEnum(VehicleType)
+  vehicleType!: VehicleType;
 
-
-    @Field(
-        () => VehicleType,
-    )
-    @IsEnum(
-        VehicleType,
-    )
-    vehicleType!: VehicleType;
-
-
-
-    @Field(
-        () => Float,
-    )
-    @IsNumber()
-    hourlyRate!: number;
-
-
+  @Field(() => Float)
+  @IsNumber()
+  hourlyRate!: number;
 }

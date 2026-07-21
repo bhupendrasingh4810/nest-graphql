@@ -1,4 +1,4 @@
-version: "3.9"
+version: '3.9'
 
 services:
   postgres:
@@ -9,7 +9,7 @@ services:
     restart: always
 
     ports:
-      - "5433:5432"
+      - '5433:5432'
 
     environment:
       POSTGRES_DB: parking_db

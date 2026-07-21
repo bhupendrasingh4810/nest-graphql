@@ -1,10 +1,4 @@
-import {
-    Body,
-    Controller,
-    Get,
-    Patch,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
@@ -16,58 +10,32 @@ import { UpdateProfileInput } from '../dto/update-profile.input';
 
 @Controller('users')
 export class UsersController {
-    constructor(
+  constructor(private readonly usersService: UsersService) {}
+  /**
+   * Protected endpoint.
+   *
+   * Requires JWT.
+   */
+  @Get('me')
+  async me(
+    @CurrentUser()
+    user: any,
+  ) {
+    return this.usersService.findById(user.id);
+  }
 
-        private readonly usersService:
-            UsersService,
+  @Patch('profile')
+  async updateProfile(
+    @CurrentUser()
+    user: any,
 
-    ) { }
-    /**
-     * Protected endpoint.
-     *
-     * Requires JWT.
-     */
-    @Get('me')
-    async me(
+    @Body()
+    input: UpdateProfileInput,
+  ) {
+    return this.usersService.updateProfile(
+      user.id,
 
-        @CurrentUser()
-        user: any,
-
-    ) {
-
-
-        return this.usersService
-            .findById(
-                user.id,
-            );
-
-    }
-
-
-
-
-    @Patch('profile')
-    async updateProfile(
-
-        @CurrentUser()
-        user: any,
-
-
-        @Body()
-        input: UpdateProfileInput,
-
-    ) {
-
-
-        return this.usersService
-            .updateProfile(
-
-                user.id,
-
-                input,
-
-            );
-
-    }
-
+      input,
+    );
+  }
 }

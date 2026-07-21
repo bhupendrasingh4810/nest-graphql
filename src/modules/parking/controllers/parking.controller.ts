@@ -1,13 +1,4 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 
 import { ParkingService } from '../services/parking.service';
 
@@ -24,119 +15,80 @@ import { UpdateParkingLotInput } from '../dto/update-parking-lot.input';
  */
 @Controller('parking-lots')
 export class ParkingController {
-
-    constructor(
-
-        /**
-         * Business layer.
-         */
-        private readonly parkingService: ParkingService,
-
-    ) { }
-
+  constructor(
     /**
-     * Create Parking Lot.
-     *
-     * POST /parking-lots
+     * Business layer.
      */
-    @Post()
-    async create(
+    private readonly parkingService: ParkingService,
+  ) {}
 
-        @Body()
-        input: CreateParkingLotInput,
+  /**
+   * Create Parking Lot.
+   *
+   * POST /parking-lots
+   */
+  @Post()
+  async create(
+    @Body()
+    input: CreateParkingLotInput,
+  ): Promise<ParkingLot> {
+    return this.parkingService.createParkingLot(input);
+  }
 
-    ): Promise<ParkingLot> {
+  /**
+   * Get all parking lots.
+   *
+   * GET /parking-lots
+   */
+  @Get()
+  async findAll(): Promise<ParkingLot[]> {
+    return this.parkingService.getParkingLots();
+  }
 
-        return this.parkingService.createParkingLot(
-            input,
-        );
+  /**
+   * Get one parking lot.
+   *
+   * GET /parking-lots/1
+   */
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ): Promise<ParkingLot> {
+    return this.parkingService.getParkingLotById(id);
+  }
 
-    }
+  /**
+   * Update parking lot.
+   *
+   * PATCH /parking-lots/1
+   */
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe)
+    id: number,
 
+    @Body()
+    input: UpdateParkingLotInput,
+  ): Promise<ParkingLot> {
     /**
-     * Get all parking lots.
-     *
-     * GET /parking-lots
+     * Always trust URL id.
      */
-    @Get()
-    async findAll(): Promise<ParkingLot[]> {
+    input.id = id;
 
-        return this.parkingService.getParkingLots();
+    return this.parkingService.updateParkingLot(input);
+  }
 
-    }
-
-    /**
-     * Get one parking lot.
-     *
-     * GET /parking-lots/1
-     */
-    @Get(':id')
-    async findOne(
-
-        @Param(
-            'id',
-            ParseIntPipe,
-        )
-        id: number,
-
-    ): Promise<ParkingLot> {
-
-        return this.parkingService.getParkingLotById(
-            id,
-        );
-
-    }
-
-    /**
-     * Update parking lot.
-     *
-     * PATCH /parking-lots/1
-     */
-    @Patch(':id')
-    async update(
-
-        @Param(
-            'id',
-            ParseIntPipe,
-        )
-        id: number,
-
-        @Body()
-        input: UpdateParkingLotInput,
-
-    ): Promise<ParkingLot> {
-
-        /**
-         * Always trust URL id.
-         */
-        input.id = id;
-
-        return this.parkingService.updateParkingLot(
-            input,
-        );
-
-    }
-
-    /**
-     * Delete parking lot.
-     *
-     * DELETE /parking-lots/1
-     */
-    @Delete(':id')
-    async delete(
-
-        @Param(
-            'id',
-            ParseIntPipe,
-        )
-        id: number,
-
-    ): Promise<void> {
-
-        await this.parkingService.deleteParkingLot(
-            id,
-        );
-
-    }
-
+  /**
+   * Delete parking lot.
+   *
+   * DELETE /parking-lots/1
+   */
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe)
+    id: number,
+  ): Promise<void> {
+    await this.parkingService.deleteParkingLot(id);
+  }
 }

@@ -6,16 +6,16 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
  * POST /api/auth/login
  */
 export class LoginDto {
-    /**
-     * User email.
-     */
-    @IsEmail()
-    email!: string;
+  /**
+   * User email.
+   */
+  @IsEmail()
+  email!: string;
 
-    /**
-     * User password.
-     */
-    @IsString()
-    @IsNotEmpty()
-    password!: string;
+  /**
+   * User password.
+   */
+  @IsString()
+  @IsNotEmpty()
+  password!: string;
 }

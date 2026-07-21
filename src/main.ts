@@ -20,13 +20,13 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,                  // Automatically remove properties that are not defined in the DTO.
-      transform: true,                  // Automatically convert incoming payloads to DTO instances.
-      forbidNonWhitelisted: true,       // Throw an error if unknown properties are sent in the request body.
+      whitelist: true, // Automatically remove properties that are not defined in the DTO.
+      transform: true, // Automatically convert incoming payloads to DTO instances.
+      forbidNonWhitelisted: true, // Throw an error if unknown properties are sent in the request body.
       transformOptions: {
-        enableImplicitConversion: true  // Enable implicit type conversion. Example: "1" -> 1
-      }
-    })
+        enableImplicitConversion: true, // Enable implicit type conversion. Example: "1" -> 1
+      },
+    }),
   );
 
   // app.useGlobalInterceptors(new ResponseInterceptor());

@@ -5,18 +5,9 @@ import { PaymentService } from './services/payment.service';
 import { PaymentResolver } from './resolvers/payment.resolver';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Payment
-        ])
-    ],
-    controllers: [],
-    providers: [
-        PaymentService,
-        PaymentResolver,
-    ],
-    exports: [
-        PaymentService
-    ]
+  imports: [TypeOrmModule.forFeature([Payment])],
+  controllers: [],
+  providers: [PaymentService, PaymentResolver],
+  exports: [PaymentService],
 })
-export class PaymentModule { }
+export class PaymentModule {}

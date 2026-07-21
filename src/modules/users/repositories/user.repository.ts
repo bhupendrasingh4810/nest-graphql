@@ -11,53 +11,33 @@ import { User } from '../entities/user.entity';
  */
 @Injectable()
 export class UserRepository {
+  constructor(
+    @InjectRepository(User)
+    private readonly repository: Repository<User>,
+  ) {}
 
-    constructor(
+  /**
+   * Find user by email.
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOne({
+      where: {
+        email,
+      },
+    });
+  }
 
-        @InjectRepository(User)
-        private readonly repository: Repository<User>,
+  /**
+   * Save user.
+   */
+  async save(user: User): Promise<User> {
+    return this.repository.save(user);
+  }
 
-    ) { }
-
-    /**
-     * Find user by email.
-     */
-    async findByEmail(
-        email: string,
-    ): Promise<User | null> {
-
-        return this.repository.findOne({
-
-            where: {
-
-                email,
-
-            },
-
-        });
-
-    }
-
-    /**
-     * Save user.
-     */
-    async save(
-        user: User,
-    ): Promise<User> {
-
-        return this.repository.save(user);
-
-    }
-
-    /**
-     * Create entity.
-     */
-    create(
-        data: Partial<User>,
-    ): User {
-
-        return this.repository.create(data);
-
-    }
-
+  /**
+   * Create entity.
+   */
+  create(data: Partial<User>): User {
+    return this.repository.create(data);
+  }
 }

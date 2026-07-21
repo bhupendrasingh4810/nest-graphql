@@ -1,13 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 import {
-    IsEmail,
-    IsEnum,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    MaxLength,
-    MinLength,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
 import { UserRole } from '../enums/user-role.enum';
@@ -25,43 +25,43 @@ import { UserRole } from '../enums/user-role.enum';
  */
 @InputType()
 export class CreateUserInput {
-    /**
-     * User's full name.
-     */
-    @Field()
-    @IsString()
-    @IsNotEmpty()
-    @MaxLength(100)
-    fullName!: string;
+  /**
+   * User's full name.
+   */
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  fullName!: string;
 
-    /**
-     * Email address.
-     */
-    @Field()
-    @IsEmail()
-    email!: string;
+  /**
+   * Email address.
+   */
+  @Field()
+  @IsEmail()
+  email!: string;
 
-    /**
-     * Plain text password.
-     *
-     * NOTE:
-     * Service will hash it before saving.
-     */
-    @Field()
-    @IsString()
-    @MinLength(8)
-    @MaxLength(100)
-    password!: string;
+  /**
+   * Plain text password.
+   *
+   * NOTE:
+   * Service will hash it before saving.
+   */
+  @Field()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(100)
+  password!: string;
 
-    /**
-     * Optional role.
-     *
-     * Default = CUSTOMER
-     */
-    @Field(() => UserRole, {
-        nullable: true,
-    })
-    @IsOptional()
-    @IsEnum(UserRole)
-    role?: UserRole;
+  /**
+   * Optional role.
+   *
+   * Default = CUSTOMER
+   */
+  @Field(() => UserRole, {
+    nullable: true,
+  })
+  @IsOptional()
+  @IsEnum(UserRole)
+  role?: UserRole;
 }

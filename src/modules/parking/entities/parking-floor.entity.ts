@@ -1,19 +1,14 @@
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import {
-    Field,
-    ID,
-    Int,
-    ObjectType,
-} from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 
 import { ParkingLot } from './parking-lot.entity';
 import { ParkingZone } from './parking-zone.entity';
@@ -30,94 +25,82 @@ import { ParkingSlot } from './parking-slot.entity';
  * Floor 2
  */
 @Entity({
-    name: 'parking_floors',
+  name: 'parking_floors',
 })
 @ObjectType()
 export class ParkingFloor {
-    /**
-     * Primary key.
-     */
-    @Field(() => ID)
-    @PrimaryGeneratedColumn()
-    id!: number;
+  /**
+   * Primary key.
+   */
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    /**
-     * Floor number.
-     */
-    @Field(() => Int)
-    @Column()
-    floorNumber!: number;
+  /**
+   * Floor number.
+   */
+  @Field(() => Int)
+  @Column()
+  floorNumber!: number;
 
-    /**
-     * Display name.
-     */
-    @Field()
-    @Column({
-        length: 100,
-    })
-    name!: string;
+  /**
+   * Display name.
+   */
+  @Field()
+  @Column({
+    length: 100,
+  })
+  name!: string;
 
-    /**
-     * Display order.
-     */
-    @Field(() => Int)
-    @Column()
-    displayOrder!: number;
+  /**
+   * Display order.
+   */
+  @Field(() => Int)
+  @Column()
+  displayOrder!: number;
 
-    /**
-     * Parent parking lot.
-     */
-    @ManyToOne(
-        () => ParkingLot,
-        (parkingLot: ParkingLot) => parkingLot.floors,
-        {
-            nullable: false,
-            onDelete: 'CASCADE',
-        },
-    )
-    parkingLot!: ParkingLot;
+  /**
+   * Parent parking lot.
+   */
+  @ManyToOne(() => ParkingLot, (parkingLot: ParkingLot) => parkingLot.floors, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  parkingLot!: ParkingLot;
 
-    /**
-     * Zones on this floor.
-     */
-    @OneToMany(
-        () => ParkingZone,
-        (zone: ParkingZone) => zone.floor,
-    )
-    zones!: ParkingZone[];
+  /**
+   * Zones on this floor.
+   */
+  @OneToMany(() => ParkingZone, (zone: ParkingZone) => zone.floor)
+  zones!: ParkingZone[];
 
-    /**
-     * Floor contains many slots.
-     */
-    @OneToMany(
+  /**
+   * Floor contains many slots.
+   */
+  @OneToMany(
+    () => ParkingSlot,
 
-        () => ParkingSlot,
+    (slot) => slot.floor,
+  )
+  slots!: ParkingSlot[];
 
-        slot => slot.floor,
+  /**
+   * Parent parking lot.
+   */
+  @ManyToOne(() => ParkingLot, (lot) => lot.floors)
+  lot!: ParkingLot;
 
-    )
-    slots!: ParkingSlot[];
+  /**
+   * Created timestamp.
+   */
+  @Field()
+  @CreateDateColumn()
+  createdAt!: Date;
 
-    /**
- * Parent parking lot.
- */
-    @ManyToOne(
-        () => ParkingLot,
-        lot => lot.floors,
-    )
-    lot!: ParkingLot;
-
-    /**
-     * Created timestamp.
-     */
-    @Field()
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    /**
-     * Updated timestamp.
-     */
-    @Field()
-    @UpdateDateColumn()
-    updatedAt!: Date;
+  /**
+   * Updated timestamp.
+   */
+  @Field()
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

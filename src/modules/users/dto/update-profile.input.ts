@@ -1,42 +1,27 @@
-import {
-    Field,
-    InputType,
-} from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 
-
-import {
-    IsOptional,
-    IsString,
-    MaxLength,
-} from 'class-validator';
-
-
+import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 @InputType()
 export class UpdateProfileInput {
+  /**
+   * Updated full name.
+   */
+  @Field({
+    nullable: true,
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  fullName?: string;
 
-
-    /**
-     * Updated full name.
-     */
-    @Field({
-        nullable: true,
-    })
-    @IsOptional()
-    @IsString()
-    @MaxLength(100)
-    fullName?: string;
-
-
-
-    /**
-     * Updated phone number.
-     */
-    @Field({
-        nullable: true,
-    })
-    @IsOptional()
-    @IsString()
-    phone?: string;
-
+  /**
+   * Updated phone number.
+   */
+  @Field({
+    nullable: true,
+  })
+  @IsOptional()
+  @IsString()
+  phone?: string;
 }

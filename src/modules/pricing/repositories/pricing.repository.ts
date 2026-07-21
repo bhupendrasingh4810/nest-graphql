@@ -1,89 +1,31 @@
-import {
+import { Injectable } from '@nestjs/common';
 
-    Injectable,
+import { InjectRepository } from '@nestjs/typeorm';
 
-} from '@nestjs/common';
+import { Repository } from 'typeorm';
 
-
-import {
-
-    InjectRepository,
-
-} from '@nestjs/typeorm';
-
-
-import {
-
-    Repository,
-
-} from 'typeorm';
-
-
-import {
-
-    ParkingPrice,
-
-} from '../entities/parking-price.entity';
+import { ParkingPrice } from '../entities/parking-price.entity';
 
 import { VehicleType } from 'src/modules/vehicles/enums/vehicle-type.enum';
 
-
-
 @Injectable()
 export class PricingRepository {
+  constructor(
+    @InjectRepository(ParkingPrice)
+    private readonly repository: Repository<ParkingPrice>,
+  ) {}
 
+  async findByVehicleType(type: VehicleType) {
+    return this.repository.findOne({
+      where: {
+        vehicleType: type,
 
-    constructor(
+        active: true,
+      },
+    });
+  }
 
-        @InjectRepository(
-            ParkingPrice,
-        )
-
-        private readonly repository:
-            Repository<ParkingPrice>,
-
-    ) { }
-
-
-
-
-
-    async findByVehicleType(
-
-        type: VehicleType,
-
-    ) {
-
-
-        return this.repository.findOne({
-
-            where: {
-
-                vehicleType: type,
-
-                active: true,
-
-            },
-
-        });
-
-
-    }
-
-
-
-
-    async save(
-
-        price: ParkingPrice,
-
-    ) {
-
-
-        return this.repository.save(
-            price,
-        );
-
-    }
-
+  async save(price: ParkingPrice) {
+    return this.repository.save(price);
+  }
 }

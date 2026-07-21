@@ -4,15 +4,15 @@ import { registerEnumType } from '@nestjs/graphql';
  * Types of parking slots.
  */
 export enum ParkingSlotType {
-    BIKE = 'BIKE',
+  BIKE = 'BIKE',
 
-    CAR = 'CAR',
+  CAR = 'CAR',
 
-    ELECTRIC = 'ELECTRIC',
+  ELECTRIC = 'ELECTRIC',
 
-    HANDICAPPED = 'HANDICAPPED',
+  HANDICAPPED = 'HANDICAPPED',
 }
 
 registerEnumType(ParkingSlotType, {
-    name: 'ParkingSlotType',
+  name: 'ParkingSlotType',
 });

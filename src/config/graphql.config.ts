@@ -4,25 +4,25 @@ import { GqlOptionsFactory } from '@nestjs/graphql';
 
 @Injectable()
 export class GraphQLConfigService implements GqlOptionsFactory {
-    createGqlOptions(): ApolloDriverConfig {
-        return {
-            // Tell NestJS to use Apollo Server
-            driver: ApolloDriver,
+  createGqlOptions(): ApolloDriverConfig {
+    return {
+      // Tell NestJS to use Apollo Server
+      driver: ApolloDriver,
 
-            // Generate schema automatically
-            autoSchemaFile: 'src/schema.gql',
+      // Generate schema automatically
+      autoSchemaFile: 'src/schema.gql',
 
-            // Sort schema alphabetically
-            sortSchema: true,
+      // Sort schema alphabetically
+      sortSchema: true,
 
-            // GraphQL endpoint
-            path: '/graphql',
+      // GraphQL endpoint
+      path: '/graphql',
 
-            // Enable playground
-            // playground: true,
+      // Enable playground
+      // playground: true,
 
-            // Allow introspection
-            introspection: true,
-        };
-    }
+      // Allow introspection
+      introspection: true,
+    };
+  }
 }

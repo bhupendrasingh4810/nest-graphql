@@ -1,9 +1,4 @@
-import {
-    Field,
-    InputType,
-    Int,
-    PartialType,
-} from '@nestjs/graphql';
+import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
 
 import { CreateParkingLotInput } from './create-parking-lot.input';
 import { IsInt, Min } from 'class-validator';
@@ -15,15 +10,12 @@ import { IsInt, Min } from 'class-validator';
  * because of PartialType.
  */
 @InputType()
-export class UpdateParkingLotInput extends PartialType(
-    CreateParkingLotInput,
-) {
-
-    /**
-     * Parking Lot Id.
-     */
-    @Field(() => Int)
-    @IsInt()
-    @Min(1)
-    id!: number;
+export class UpdateParkingLotInput extends PartialType(CreateParkingLotInput) {
+  /**
+   * Parking Lot Id.
+   */
+  @Field(() => Int)
+  @IsInt()
+  @Min(1)
+  id!: number;
 }

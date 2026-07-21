@@ -1,27 +1,20 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
-    name: 'invoices'
+  name: 'invoices',
 })
 export class Invoice {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
+  @Column()
+  ticketId!: number;
 
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @Column()
+  invoiceNumber!: string;
 
-
-    @Column()
-    ticketId!: number;
-
-
-    @Column()
-    invoiceNumber!: string;
-
-
-    @Column({
-        type: 'decimal'
-    })
-    amount!: number;
-
-
+  @Column({
+    type: 'decimal',
+  })
+  amount!: number;
 }

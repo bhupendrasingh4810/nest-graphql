@@ -10,31 +10,18 @@ import { UserRepository } from './repositories/user.repository';
  * Registers User entity with TypeORM.
  */
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            User,
-        ]),
-    ],
-    controllers: [
-        UsersController
-    ],
-    /**
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [UsersController],
+  /**
    * Providers available
    * inside this module.
    */
-    providers: [
-        UsersService,
-        UsersResolver,
-        UserRepository
-    ],
+  providers: [UsersService, UsersResolver, UserRepository],
 
-    /**
-     * Export service so
-     * AuthModule can use it.
-     */
-    exports: [
-        UsersService,
-        UserRepository
-    ],
+  /**
+   * Export service so
+   * AuthModule can use it.
+   */
+  exports: [UsersService, UserRepository],
 })
-export class UsersModule { }
+export class UsersModule {}

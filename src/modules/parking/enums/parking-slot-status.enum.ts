@@ -4,17 +4,17 @@ import { registerEnumType } from '@nestjs/graphql';
  * Current slot status.
  */
 export enum ParkingSlotStatus {
-    AVAILABLE = 'AVAILABLE',
+  AVAILABLE = 'AVAILABLE',
 
-    OCCUPIED = 'OCCUPIED',
+  OCCUPIED = 'OCCUPIED',
 
-    MAINTENANCE = 'MAINTENANCE',
+  MAINTENANCE = 'MAINTENANCE',
 
-    RESERVED = 'RESERVED',
+  RESERVED = 'RESERVED',
 
-    OUT_OF_SERVICE = 'OUT_OF_SERVICE',
+  OUT_OF_SERVICE = 'OUT_OF_SERVICE',
 }
 
 registerEnumType(ParkingSlotStatus, {
-    name: 'ParkingSlotStatus',
+  name: 'ParkingSlotStatus',
 });

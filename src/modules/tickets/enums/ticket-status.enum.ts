@@ -4,13 +4,13 @@ import { registerEnumType } from '@nestjs/graphql';
  * Parking ticket lifecycle.
  */
 export enum TicketStatus {
-    ACTIVE = 'ACTIVE',
+  ACTIVE = 'ACTIVE',
 
-    COMPLETED = 'COMPLETED',
+  COMPLETED = 'COMPLETED',
 
-    CANCELLED = 'CANCELLED',
+  CANCELLED = 'CANCELLED',
 }
 
 registerEnumType(TicketStatus, {
-    name: 'TicketStatus',
+  name: 'TicketStatus',
 });

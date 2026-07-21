@@ -12,30 +12,20 @@ import { PaymentModule } from '../payment/payment.module';
 import { InvoiceModule } from '../invoice/invoice.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            ParkingTicket,
-        ]),
-        /**
-         * Allows TicketService
-         * to use ParkingService.
-         */
-        ParkingModule,
-        PricingModule,
-        VehiclesModule,
-        PaymentModule,
-        InvoiceModule
-    ],
-    controllers: [
-        TicketController
-    ],
-    providers: [
-        TicketRepository,
-        TicketService,
-        TicketResolver
-    ],
-    exports: [
-        TicketService
-    ]
+  imports: [
+    TypeOrmModule.forFeature([ParkingTicket]),
+    /**
+     * Allows TicketService
+     * to use ParkingService.
+     */
+    ParkingModule,
+    PricingModule,
+    VehiclesModule,
+    PaymentModule,
+    InvoiceModule,
+  ],
+  controllers: [TicketController],
+  providers: [TicketRepository, TicketService, TicketResolver],
+  exports: [TicketService],
 })
-export class TicketsModule { }
+export class TicketsModule {}

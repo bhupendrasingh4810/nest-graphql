@@ -1,32 +1,13 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { Invoice } from "./entities/invoice.entity";
-import { InvoiceService } from "./services/invoice.service";
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Invoice } from './entities/invoice.entity';
+import { InvoiceService } from './services/invoice.service';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Invoice])],
 
-    imports: [
+  providers: [InvoiceService],
 
-        TypeOrmModule.forFeature([
-
-            Invoice,
-
-        ]),
-
-    ],
-
-    providers: [
-
-        InvoiceService,
-
-    ],
-
-    exports: [
-
-        InvoiceService,
-
-    ]
-
+  exports: [InvoiceService],
 })
-
-export class InvoiceModule { }
+export class InvoiceModule {}

@@ -8,51 +8,43 @@ import { AuthController } from './controllers/auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-    imports: [
+  imports: [
+    /**
+     * Import Users module
+     * so AuthService can use it.
+     */
+    UsersModule,
+
+    /**
+     * Register JWT.
+     */
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+
+      inject: [ConfigService],
+
+      useFactory: (configService: ConfigService) => ({
         /**
-         * Import Users module
-         * so AuthService can use it.
+         * Secret used to sign JWT tokens.
          */
-        UsersModule,
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
 
         /**
-         * Register JWT.
+         * Default signing options.
          */
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
+        signOptions: {
+          /**
+           * Convert "1d", "7d", etc. into milliseconds.
+           */
+          // Read from .env
+          expiresIn: configService.getOrThrow<string>('JWT_EXPIRES_IN') as any,
+        },
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, AuthResolver, JwtStrategy],
 
-            inject: [ConfigService],
-
-            useFactory: (configService: ConfigService) => ({
-                /**
-                 * Secret used to sign JWT tokens.
-                 */
-                secret: configService.getOrThrow<string>('JWT_SECRET'),
-
-                /**
-                 * Default signing options.
-                 */
-                signOptions: {
-                    /**
-                     * Convert "1d", "7d", etc. into milliseconds.
-                     */
-                    // Read from .env
-                    expiresIn: configService.getOrThrow<string>('JWT_EXPIRES_IN') as any,
-                },
-            }),
-        }),
-    ],
-    controllers: [
-        AuthController
-    ],
-    providers: [
-        AuthService,
-        AuthResolver,
-        JwtStrategy
-    ],
-
-    exports: [
-        AuthService,
-    ],
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,7 +1,4 @@
-import {
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { ParkingLot } from '../entities/parking-lot.entity';
 
@@ -19,267 +16,153 @@ import { ParkingSlot } from '../entities/parking-slot.entity';
  */
 @Injectable()
 export class ParkingService {
+  constructor(
+    /**
+     * Parking repository.
+     */
+    private readonly parkingLotRepository: ParkingLotRepository,
+    private readonly slotRepository: ParkingSlotRepository,
+  ) {}
 
-    constructor(
+  /**
+   * Create Parking Lot.
+   */
+  async createParkingLot(input: CreateParkingLotInput): Promise<ParkingLot> {
+    /**
+     * Convert DTO into Entity.
+     */
+    const parkingLot = await this.parkingLotRepository.create({
+      name: input.name,
 
-        /**
-         * Parking repository.
-         */
-        private readonly parkingLotRepository: ParkingLotRepository,
-        private readonly slotRepository: ParkingSlotRepository
-    ) { }
+      code: input.code,
+
+      address: input.address,
+
+      city: input.city,
+
+      state: input.state,
+
+      country: input.country,
+
+      postalCode: input.postalCode,
+
+      latitude: input.latitude,
+
+      longitude: input.longitude,
+    });
+
+    return parkingLot;
+  }
+
+  /**
+   * Fetch all parking lots.
+   */
+  async getParkingLots(): Promise<ParkingLot[]> {
+    return this.parkingLotRepository.findAll();
+  }
+
+  /**
+   * Fetch single parking lot.
+   */
+  async getParkingLotById(id: number): Promise<ParkingLot> {
+    const parkingLot = await this.parkingLotRepository.findById(id);
+
+    if (!parkingLot) {
+      throw new NotFoundException(`Parking Lot ${id} not found`);
+    }
+
+    return parkingLot;
+  }
+
+  /**
+   * Update parking lot.
+   */
+  async updateParkingLot(input: UpdateParkingLotInput): Promise<ParkingLot> {
+    const parkingLot = await this.getParkingLotById(input.id);
 
     /**
-     * Create Parking Lot.
+     * Copy only supplied properties.
      */
-    async createParkingLot(
-        input: CreateParkingLotInput,
-    ): Promise<ParkingLot> {
+    Object.assign(parkingLot, input);
 
-        /**
-         * Convert DTO into Entity.
-         */
-        const parkingLot = await this.parkingLotRepository.create({
+    return this.parkingLotRepository.save(parkingLot);
+  }
 
-            name: input.name,
+  /**
+   * Delete parking lot.
+   */
+  async deleteParkingLot(id: number): Promise<void> {
+    const parkingLot = await this.getParkingLotById(id);
 
-            code: input.code,
+    await this.parkingLotRepository.remove(parkingLot);
+  }
 
-            address: input.address,
+  /**
+   * Get available slots.
+   */
+  async getAvailableSlots(): Promise<ParkingSlot[]> {
+    return this.slotRepository.findAvailableSlots();
+  }
 
-            city: input.city,
+  /**
+   * Occupy parking slot.
+   *
+   * Called when vehicle enters.
+   */
+  async occupySlot(slotId: number): Promise<ParkingSlot> {
+    const slot = await this.slotRepository.findById(slotId);
 
-            state: input.state,
-
-            country: input.country,
-
-            postalCode: input.postalCode,
-
-            latitude: input.latitude,
-
-            longitude: input.longitude,
-
-        });
-
-        return parkingLot;
+    if (!slot) {
+      throw new NotFoundException('Parking slot not found');
     }
 
     /**
-     * Fetch all parking lots.
+     * Slot already occupied.
      */
-    async getParkingLots(): Promise<ParkingLot[]> {
-
-        return this.parkingLotRepository.findAll();
-
+    if (slot.status === ParkingSlotStatus.OCCUPIED) {
+      throw new Error('Slot already occupied');
     }
 
-    /**
-     * Fetch single parking lot.
-     */
-    async getParkingLotById(
-        id: number,
-    ): Promise<ParkingLot> {
+    await this.slotRepository.updateStatus(
+      slotId,
 
-        const parkingLot =
-            await this.parkingLotRepository.findById(id);
+      ParkingSlotStatus.OCCUPIED,
+    );
 
-        if (!parkingLot) {
+    slot.status = ParkingSlotStatus.OCCUPIED;
 
-            throw new NotFoundException(
-                `Parking Lot ${id} not found`,
-            );
+    return slot;
+  }
 
-        }
+  /**
+   * Release parking slot.
+   *
+   * Called after checkout.
+   */
+  async releaseSlot(slotId: number): Promise<ParkingSlot> {
+    const slot = await this.slotRepository.findById(slotId);
 
-        return parkingLot;
-
+    if (!slot) {
+      throw new NotFoundException('Parking slot not found');
     }
 
-    /**
-     * Update parking lot.
-     */
-    async updateParkingLot(
-        input: UpdateParkingLotInput,
-    ): Promise<ParkingLot> {
+    await this.slotRepository.updateStatus(
+      slotId,
 
-        const parkingLot =
-            await this.getParkingLotById(input.id);
+      ParkingSlotStatus.AVAILABLE,
+    );
 
-        /**
-         * Copy only supplied properties.
-         */
-        Object.assign(
-            parkingLot,
-            input,
-        );
+    slot.status = ParkingSlotStatus.AVAILABLE;
 
-        return this.parkingLotRepository.save(
-            parkingLot,
-        );
+    return slot;
+  }
 
-    }
+  /**
+   * Find nearest available slot.
+   */
+  async findNearestSlot(): Promise<ParkingSlot | null> {
+    const slots = await this.slotRepository.findAvailableSlots();
 
-    /**
-     * Delete parking lot.
-     */
-    async deleteParkingLot(
-        id: number,
-    ): Promise<void> {
-
-        const parkingLot =
-            await this.getParkingLotById(id);
-
-        await this.parkingLotRepository.remove(
-            parkingLot,
-        );
-
-    }
-
-    /**
-     * Get available slots.
-     */
-    async getAvailableSlots()
-        : Promise<ParkingSlot[]> {
-
-
-        return this.slotRepository
-            .findAvailableSlots();
-
-    }
-
-
-
-    /**
-     * Occupy parking slot.
-     *
-     * Called when vehicle enters.
-     */
-    async occupySlot(
-
-        slotId: number,
-
-    ): Promise<ParkingSlot> {
-
-
-        const slot =
-            await this.slotRepository.findById(
-                slotId,
-            );
-
-
-        if (!slot) {
-
-            throw new NotFoundException(
-                'Parking slot not found',
-            );
-
-        }
-
-
-
-        /**
-         * Slot already occupied.
-         */
-        if (
-            slot.status ===
-            ParkingSlotStatus.OCCUPIED
-        ) {
-
-            throw new Error(
-                'Slot already occupied',
-            );
-
-        }
-
-
-
-        await this.slotRepository.updateStatus(
-
-            slotId,
-
-            ParkingSlotStatus.OCCUPIED,
-
-        );
-
-
-
-        slot.status =
-            ParkingSlotStatus.OCCUPIED;
-
-
-        return slot;
-
-    }
-
-
-
-
-    /**
-     * Release parking slot.
-     *
-     * Called after checkout.
-     */
-    async releaseSlot(
-
-        slotId: number,
-
-    ): Promise<ParkingSlot> {
-
-
-        const slot =
-            await this.slotRepository.findById(
-                slotId,
-            );
-
-
-        if (!slot) {
-
-            throw new NotFoundException(
-                'Parking slot not found',
-            );
-
-        }
-
-
-
-        await this.slotRepository.updateStatus(
-
-            slotId,
-
-            ParkingSlotStatus.AVAILABLE,
-
-        );
-
-
-
-        slot.status =
-            ParkingSlotStatus.AVAILABLE;
-
-
-
-        return slot;
-
-    }
-
-
-
-
-    /**
-     * Find nearest available slot.
-     */
-    async findNearestSlot()
-        : Promise<ParkingSlot | null> {
-
-
-        const slots =
-            await this.slotRepository
-                .findAvailableSlots();
-
-
-
-        return slots.length
-            ? slots[0]
-            : null;
-
-    }
+    return slots.length ? slots[0] : null;
+  }
 }

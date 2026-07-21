@@ -4,13 +4,13 @@ import { registerEnumType } from '@nestjs/graphql';
  * Current status of the user account.
  */
 export enum UserStatus {
-    ACTIVE = 'ACTIVE',
+  ACTIVE = 'ACTIVE',
 
-    INACTIVE = 'INACTIVE',
+  INACTIVE = 'INACTIVE',
 
-    BLOCKED = 'BLOCKED',
+  BLOCKED = 'BLOCKED',
 }
 
 registerEnumType(UserStatus, {
-    name: 'UserStatus',
+  name: 'UserStatus',
 });

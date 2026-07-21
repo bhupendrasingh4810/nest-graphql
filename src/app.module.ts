@@ -19,9 +19,10 @@ import { InvoiceModule } from './modules/invoice/invoice.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({  // Make environment variables available throughout the application.
-      isGlobal: true,        // Register globally so we don't need to import ConfigModule in every module.
-      cache: true
+    ConfigModule.forRoot({
+      // Make environment variables available throughout the application.
+      isGlobal: true, // Register globally so we don't need to import ConfigModule in every module.
+      cache: true,
     }),
     // Register PostgreSQL
     TypeOrmModule.forRootAsync({
@@ -47,8 +48,8 @@ import { InvoiceModule } from './modules/invoice/invoice.module';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: RolesGuard
-    }
+      useClass: RolesGuard,
+    },
   ],
 })
-export class AppModule { }
+export class AppModule {}

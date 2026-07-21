@@ -1,9 +1,4 @@
-import {
-    Args,
-    Mutation,
-    Query,
-    Resolver,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { CreateUserInput } from '../dto/create-user.input';
 import { User } from '../entities/user.entity';
@@ -21,99 +16,66 @@ import { UseGuards } from '@nestjs/common';
  */
 @Resolver(() => User)
 export class UsersResolver {
-    constructor(
-        private readonly usersService: UsersService,
-    ) { }
+  constructor(private readonly usersService: UsersService) {}
 
-    /**
-     * GraphQL Query
-     *
-     * query {
-     *   users {
-     *     id
-     *     fullName
-     *   }
-     * }
-     */
-    @Query(() => [User])
-    async users(): Promise<User[]> {
-        return this.usersService.findAll();
-    }
+  /**
+   * GraphQL Query
+   *
+   * query {
+   *   users {
+   *     id
+   *     fullName
+   *   }
+   * }
+   */
+  @Query(() => [User])
+  async users(): Promise<User[]> {
+    return this.usersService.findAll();
+  }
 
-    /**
-     * GraphQL Mutation
-     *
-     * mutation {
-     *   createUser(input:{...})
-     * }
-     */
-    @Mutation(() => User)
-    async createUser(
-        @Args('input')
-        input: CreateUserInput,
-    ): Promise<User> {
-        return this.usersService.create(input);
-    }
+  /**
+   * GraphQL Mutation
+   *
+   * mutation {
+   *   createUser(input:{...})
+   * }
+   */
+  @Mutation(() => User)
+  async createUser(
+    @Args('input')
+    input: CreateUserInput,
+  ): Promise<User> {
+    return this.usersService.create(input);
+  }
 
-    /**
-     * Logged in user.
-     */
-    @Query(
-        () => User,
-    )
-    @UseGuards(
-        JwtAuthGuard,
-    )
-    async me(
+  /**
+   * Logged in user.
+   */
+  @Query(() => User)
+  @UseGuards(JwtAuthGuard)
+  async me(
+    @CurrentUser()
+    user: any,
+  ) {
+    return this.usersService.findById(user.id);
+  }
 
-        @CurrentUser()
-        user: any,
+  /**
+   * Update profile.
+   */
+  @Mutation(() => User)
+  @UseGuards(JwtAuthGuard)
+  async updateProfile(
+    @CurrentUser()
+    user: any,
 
-    ) {
+    @Args('input')
+    input: UpdateProfileInput,
+  ) {
+    return this.usersService.updateProfile(
+      user.id,
 
-
-        return this.usersService
-            .findById(
-                user.id,
-            );
-
-    }
-
-
-
-
-    /**
-     * Update profile.
-     */
-    @Mutation(
-        () => User,
-    )
-    @UseGuards(
-        JwtAuthGuard,
-    )
-    async updateProfile(
-
-        @CurrentUser()
-        user: any,
-
-
-        @Args(
-            'input',
-        )
-        input: UpdateProfileInput,
-
-
-    ) {
-
-
-        return this.usersService
-            .updateProfile(
-
-                user.id,
-
-                input,
-
-            );
-
-    }
+      input,
+    );
+  }
 }

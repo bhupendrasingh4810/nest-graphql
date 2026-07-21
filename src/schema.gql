@@ -51,6 +51,15 @@ input CreateUserInput {
   role: UserRole
 }
 
+input CreateVehicleInput {
+  color: String!
+  manufacturer: String!
+  model: String!
+  ownerId: Float
+  registrationNumber: String!
+  type: VehicleType!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -69,7 +78,9 @@ type Mutation {
   createPricing(input: CreatePriceInput!): ParkingPrice!
   createTicket(input: CreateTicketInput!): ParkingTicket!
   createUser(input: CreateUserInput!): User!
+  createVehicle(input: CreateVehicleInput!): Vehicle!
   deleteParkingLot(id: Int!): Boolean!
+  deleteVehicle(id: Int!): Boolean!
   generateParkingSlots(count: Int!, floorId: Int!): [ParkingSlot!]!
   login(input: LoginInput!): AuthResponse!
   makePayment(amount: Float!, ticketId: Int!): Payment!
@@ -78,6 +89,7 @@ type Mutation {
   signup(input: SignUpInput!): User!
   updateParkingLot(input: UpdateParkingLotInput!): ParkingLot!
   updateProfile(input: UpdateProfileInput!): User!
+  updateVehicle(id: Int!, input: UpdateVehicleInput!): Vehicle!
 }
 
 input ParkingFilterInput {
@@ -177,6 +189,7 @@ enum PaymentStatus {
 }
 
 type Query {
+  activeTickets: [ParkingTicket!]!
   availableSlots: [ParkingSlot!]!
 
   """Returns application health status."""
@@ -189,7 +202,12 @@ type Query {
   payment(id: Int!): Payment
   payments: [Payment!]!
   ticket(id: Int!): ParkingTicket
+  tickets: [ParkingTicket!]!
   users: [User!]!
+  vehicle(id: Int!): Vehicle!
+  vehicleByRegistration(registrationNumber: String!): Vehicle!
+  vehicleHistory(vehicleId: Int!): [ParkingTicket!]!
+  vehicles: [Vehicle!]!
 }
 
 input SignUpInput {
@@ -222,6 +240,15 @@ input UpdateProfileInput {
   phone: String
 }
 
+input UpdateVehicleInput {
+  color: String
+  manufacturer: String
+  model: String
+  ownerId: Float
+  registrationNumber: String
+  type: VehicleType
+}
+
 type User {
   createdAt: DateTime!
   email: String!
@@ -244,6 +271,23 @@ enum UserRole {
 enum UserStatus {
   ACTIVE
   BLOCKED
+  INACTIVE
+}
+
+type Vehicle {
+  color: String!
+  createdAt: DateTime!
+  id: ID!
+  manufacturer: String!
+  model: String!
+  registrationNumber: String!
+  status: VehicleStatus!
+  type: VehicleType!
+  updatedAt: DateTime!
+}
+
+enum VehicleStatus {
+  ACTIVE
   INACTIVE
 }
 

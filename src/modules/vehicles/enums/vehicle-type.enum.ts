@@ -4,19 +4,19 @@ import { registerEnumType } from '@nestjs/graphql';
  * Supported vehicle types.
  */
 export enum VehicleType {
-    BIKE = 'BIKE',
+  BIKE = 'BIKE',
 
-    CAR = 'CAR',
+  CAR = 'CAR',
 
-    SUV = 'SUV',
+  SUV = 'SUV',
 
-    TRUCK = 'TRUCK',
+  TRUCK = 'TRUCK',
 
-    BUS = 'BUS',
+  BUS = 'BUS',
 
-    ELECTRIC_CAR = 'ELECTRIC_CAR',
+  ELECTRIC_CAR = 'ELECTRIC_CAR',
 }
 
 registerEnumType(VehicleType, {
-    name: 'VehicleType',
+  name: 'VehicleType',
 });

@@ -1,12 +1,4 @@
-import {
-    Body,
-    Controller,
-    HttpCode,
-    HttpStatus,
-    Post,
-    Request,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 
 import { AuthService } from '../services/auth.service';
 
@@ -26,85 +18,72 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
  */
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+  constructor(private readonly authService: AuthService) {}
 
-    /**
-     * Register new user.
-     *
-     * POST
-     * /api/auth/signup
-     */
-    @Post('signup')
-    async signup(
-        @Body() dto: SignUpInput,
-    ) {
-        return this.authService.signup(dto);
-    }
+  /**
+   * Register new user.
+   *
+   * POST
+   * /api/auth/signup
+   */
+  @Post('signup')
+  async signup(@Body() dto: SignUpInput) {
+    return this.authService.signup(dto);
+  }
 
-    /**
-     * Login user.
-     *
-     * POST
-     * /api/auth/login
-     */
-    @Post('login')
-    @HttpCode(HttpStatus.OK)
-    async login(
-        @Body() dto: LoginDto,
-    ) {
-        return this.authService.login(dto);
-    }
+  /**
+   * Login user.
+   *
+   * POST
+   * /api/auth/login
+   */
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
 
-    /**
- * Change password.
- *
- * POST /auth/change-password
- *
- * Requires login.
- */
-    @Post('change-password')
-    @UseGuards(JwtAuthGuard)
-    async changePassword(
-        @Request()
-        req,
-        @Body()
-        dto: ChangePasswordDto,
-    ): Promise<boolean> {
-        return this.authService.changePassword(
-            req.user.id,
-            dto,
-        );
-    }
+  /**
+   * Change password.
+   *
+   * POST /auth/change-password
+   *
+   * Requires login.
+   */
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Request()
+    req,
+    @Body()
+    dto: ChangePasswordDto,
+  ): Promise<boolean> {
+    return this.authService.changePassword(req.user.id, dto);
+  }
 
-    /**
-     * Forgot password.
-     *
-     * POST /auth/forgot-password
-     */
-    @Post('forgot-password')
-    async forgotPassword(
-        @Body()
-        dto: ForgotPasswordDto,
-    ): Promise<boolean> {
-        return this.authService.forgotPassword(
-            dto,
-        );
-    }
+  /**
+   * Forgot password.
+   *
+   * POST /auth/forgot-password
+   */
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body()
+    dto: ForgotPasswordDto,
+  ): Promise<boolean> {
+    return this.authService.forgotPassword(dto);
+  }
 
-    /**
-     * Reset password.
-     *
-     * POST /auth/reset-password
-     */
-    @Post('reset-password')
-    async resetPassword(
-        @Body()
-        dto: ResetPasswordDto,
-    ): Promise<boolean> {
-        return this.authService.resetPassword(
-            dto,
-        );
-    }
+  /**
+   * Reset password.
+   *
+   * POST /auth/reset-password
+   */
+  @Post('reset-password')
+  async resetPassword(
+    @Body()
+    dto: ResetPasswordDto,
+  ): Promise<boolean> {
+    return this.authService.resetPassword(dto);
+  }
 }

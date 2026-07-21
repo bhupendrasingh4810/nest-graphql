@@ -127,4 +127,32 @@ export class TicketController {
 
     }
 
+    @Get()
+    findAll() {
+        return this.ticketService.findAll();
+    }
+
+    @Get(':id')
+    findOne(
+        @Param('id', ParseIntPipe)
+        id: number,
+    ) {
+        return this.ticketService.findOne(id);
+    }
+
+    @Get('vehicle/:vehicleId')
+    findVehicleHistory(
+        @Param('vehicleId', ParseIntPipe)
+        vehicleId: number,
+    ) {
+        return this.ticketService.findVehicleHistory(
+            vehicleId,
+        );
+    }
+
+    @Get('active/list')
+    activeTickets() {
+        return this.ticketService.findActiveTickets();
+    }
+
 }

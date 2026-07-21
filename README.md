@@ -94,6 +94,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## Docker Commands
+
 - docker ps
 - docker inspect parking_postgres
 - docker compose down -v
@@ -101,12 +102,14 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - docker exec -it parking_postgres psql -U postgres -d parking_db
 - docker stop <container_id>
 - docker rm <container_id>
-- sudo ss -ltnp | grep 5432  - tells if local postgreSQL is running
+- sudo ss -ltnp | grep 5432 - tells if local postgreSQL is running
 
 ## GraphQL Playground:
+
 http://localhost:3000/graphql
 
 ## REST API:
+
 http://localhost:3000/api
 
 ## License

@@ -17,36 +17,28 @@ import { ParkingQueryService } from './services/parking-query.service';
 import { ParkingQueryResolver } from './resolvers/parking-query.resolver';
 
 @Module({
-    imports: [
-        /**
-         * Register parking entities.
-         */
-        TypeOrmModule.forFeature([
-            ParkingLot,
-            ParkingFloor,
-            ParkingZone,
-            ParkingSlot
-        ]),
-    ],
-    controllers: [
-        ParkingController,
-        ParkingAdminController
-    ],
-    providers: [
-        ParkingLotRepository,
-        ParkingSlotRepository,
-        ParkingFloorRepository,
-        ParkingService,
-        ParkingAdminService,
-        ParkingQueryService,
-        ParkingResolver,
-        ParkingAdminResolver,
-        ParkingQueryResolver
-    ],
-    exports: [
-        // ParkingLotRepository,
-        ParkingService,
-        ParkingAdminService
-    ]
+  imports: [
+    /**
+     * Register parking entities.
+     */
+    TypeOrmModule.forFeature([ParkingLot, ParkingFloor, ParkingZone, ParkingSlot]),
+  ],
+  controllers: [ParkingController, ParkingAdminController],
+  providers: [
+    ParkingLotRepository,
+    ParkingSlotRepository,
+    ParkingFloorRepository,
+    ParkingService,
+    ParkingAdminService,
+    ParkingQueryService,
+    ParkingResolver,
+    ParkingAdminResolver,
+    ParkingQueryResolver,
+  ],
+  exports: [
+    // ParkingLotRepository,
+    ParkingService,
+    ParkingAdminService,
+  ],
 })
-export class ParkingModule { }
+export class ParkingModule {}

@@ -13,9 +13,9 @@ import { registerEnumType } from '@nestjs/graphql';
  * End user.
  */
 export enum UserRole {
-    ADMIN = 'ADMIN',
-    OPERATOR = 'OPERATOR',
-    CUSTOMER = 'CUSTOMER',
+  ADMIN = 'ADMIN',
+  OPERATOR = 'OPERATOR',
+  CUSTOMER = 'CUSTOMER',
 }
 
 /**
@@ -24,5 +24,5 @@ export enum UserRole {
  * Without this GraphQL cannot expose enums.
  */
 registerEnumType(UserRole, {
-    name: 'UserRole',
+  name: 'UserRole',
 });

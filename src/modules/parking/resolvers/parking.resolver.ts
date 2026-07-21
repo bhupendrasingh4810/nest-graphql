@@ -1,10 +1,4 @@
-import {
-    Args,
-    Int,
-    Mutation,
-    Query,
-    Resolver,
-} from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 
 import { ParkingLot } from '../entities/parking-lot.entity';
 
@@ -23,202 +17,130 @@ import { ParkingSlot } from '../entities/parking-slot.entity';
  */
 @Resolver(() => ParkingLot)
 export class ParkingResolver {
-
-    constructor(
-
-        /**
-         * Business logic.
-         */
-        private readonly parkingService: ParkingService,
-
-    ) { }
-
+  constructor(
     /**
-     * GraphQL Mutation
-     *
-     * Create Parking Lot
+     * Business logic.
      */
-    @Mutation(() => ParkingLot, {
-        name: 'createParkingLot',
+    private readonly parkingService: ParkingService,
+  ) {}
+
+  /**
+   * GraphQL Mutation
+   *
+   * Create Parking Lot
+   */
+  @Mutation(() => ParkingLot, {
+    name: 'createParkingLot',
+  })
+  async createParkingLot(
+    @Args('input')
+    input: CreateParkingLotInput,
+  ): Promise<ParkingLot> {
+    return this.parkingService.createParkingLot(input);
+  }
+
+  /**
+   * GraphQL Query
+   *
+   * Fetch all parking lots.
+   */
+  @Query(() => [ParkingLot], {
+    name: 'parkingLots',
+  })
+  async parkingLots(): Promise<ParkingLot[]> {
+    return this.parkingService.getParkingLots();
+  }
+
+  /**
+   * GraphQL Query
+   *
+   * Fetch one parking lot.
+   */
+  @Query(() => ParkingLot, {
+    name: 'parkingLot',
+  })
+  async parkingLot(
+    @Args('id', {
+      type: () => Int,
     })
-    async createParkingLot(
+    id: number,
+  ): Promise<ParkingLot> {
+    return this.parkingService.getParkingLotById(id);
+  }
 
-        @Args('input')
-        input: CreateParkingLotInput,
+  /**
+   * GraphQL Mutation
+   *
+   * Update parking lot.
+   */
+  @Mutation(() => ParkingLot)
+  async updateParkingLot(
+    @Args('input')
+    input: UpdateParkingLotInput,
+  ): Promise<ParkingLot> {
+    return this.parkingService.updateParkingLot(input);
+  }
 
-    ): Promise<ParkingLot> {
-
-        return this.parkingService.createParkingLot(
-            input,
-        );
-
-    }
-
-    /**
-     * GraphQL Query
-     *
-     * Fetch all parking lots.
-     */
-    @Query(() => [ParkingLot], {
-        name: 'parkingLots',
+  /**
+   * GraphQL Mutation
+   *
+   * Delete parking lot.
+   */
+  @Mutation(() => Boolean)
+  async deleteParkingLot(
+    @Args('id', {
+      type: () => Int,
     })
-    async parkingLots(): Promise<ParkingLot[]> {
+    id: number,
+  ): Promise<boolean> {
+    await this.parkingService.deleteParkingLot(id);
 
-        return this.parkingService.getParkingLots();
+    return true;
+  }
 
-    }
+  /**
+   * Get all available slots.
+   *
+   * Query:
+   *
+   * availableSlots
+   */
+  @Query(() => [ParkingSlot])
+  async availableSlots(): Promise<ParkingSlot[]> {
+    return this.parkingService.getAvailableSlots();
+  }
 
-    /**
-     * GraphQL Query
-     *
-     * Fetch one parking lot.
-     */
-    @Query(() => ParkingLot, {
-        name: 'parkingLot',
+  /**
+   * Occupy slot.
+   *
+   * Mutation:
+   *
+   * occupySlot(slotId:1)
+   */
+  @Mutation(() => ParkingSlot)
+  async occupySlot(
+    @Args('slotId', {
+      type: () => Int,
     })
-    async parkingLot(
+    slotId: number,
+  ): Promise<ParkingSlot> {
+    return this.parkingService.occupySlot(slotId);
+  }
 
-        @Args(
-            'id',
-            {
-                type: () => Int,
-            },
-        )
-        id: number,
-
-    ): Promise<ParkingLot> {
-
-        return this.parkingService.getParkingLotById(
-            id,
-        );
-
-    }
-
-    /**
-     * GraphQL Mutation
-     *
-     * Update parking lot.
-     */
-    @Mutation(() => ParkingLot)
-    async updateParkingLot(
-
-        @Args('input')
-        input: UpdateParkingLotInput,
-
-    ): Promise<ParkingLot> {
-
-        return this.parkingService.updateParkingLot(
-            input,
-        );
-
-    }
-
-    /**
-     * GraphQL Mutation
-     *
-     * Delete parking lot.
-     */
-    @Mutation(() => Boolean)
-    async deleteParkingLot(
-
-        @Args(
-            'id',
-            {
-                type: () => Int,
-            },
-        )
-        id: number,
-
-    ): Promise<boolean> {
-
-        await this.parkingService.deleteParkingLot(
-            id,
-        );
-
-        return true;
-
-    }
-
-    /**
-     * Get all available slots.
-     *
-     * Query:
-     *
-     * availableSlots
-     */
-    @Query(
-        () => [ParkingSlot],
-    )
-    async availableSlots()
-        : Promise<ParkingSlot[]> {
-
-
-        return this.parkingService
-            .getAvailableSlots();
-
-    }
-
-
-
-    /**
-     * Occupy slot.
-     *
-     * Mutation:
-     *
-     * occupySlot(slotId:1)
-     */
-    @Mutation(
-        () => ParkingSlot,
-    )
-    async occupySlot(
-
-        @Args(
-            'slotId',
-            {
-                type: () => Int,
-            },
-        )
-        slotId: number,
-
-    ): Promise<ParkingSlot> {
-
-
-        return this.parkingService
-            .occupySlot(
-                slotId,
-            );
-
-    }
-
-
-
-    /**
-     * Release slot.
-     *
-     * Mutation:
-     *
-     * releaseSlot(slotId:1)
-     */
-    @Mutation(
-        () => ParkingSlot,
-    )
-    async releaseSlot(
-
-        @Args(
-            'slotId',
-            {
-                type: () => Int,
-            },
-        )
-        slotId: number,
-
-    ): Promise<ParkingSlot> {
-
-
-        return this.parkingService
-            .releaseSlot(
-                slotId,
-            );
-
-    }
+  /**
+   * Release slot.
+   *
+   * Mutation:
+   *
+   * releaseSlot(slotId:1)
+   */
+  @Mutation(() => ParkingSlot)
+  async releaseSlot(
+    @Args('slotId', {
+      type: () => Int,
+    })
+    slotId: number,
+  ): Promise<ParkingSlot> {
+    return this.parkingService.releaseSlot(slotId);
+  }
 }

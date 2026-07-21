@@ -1,19 +1,14 @@
 import {
-    Column,
-    CreateDateColumn,
-    Entity,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import {
-    Field,
-    Float,
-    ID,
-    ObjectType,
-} from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 
 import { ParkingZone } from './parking-zone.entity';
 import { ParkingSlotStatus } from '../enums/parking-slot-status.enum';
@@ -32,125 +27,116 @@ import { ParkingFloor } from './parking-floor.entity';
  * EV-010
  */
 @Entity({
-    name: 'parking_slots',
+  name: 'parking_slots',
 })
 @ObjectType()
 export class ParkingSlot {
-    /**
-     * Primary key.
-     */
-    @Field(() => ID)
-    @PrimaryGeneratedColumn()
-    id!: number;
+  /**
+   * Primary key.
+   */
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    /**
-     * Visible slot number.
-     */
-    @Field()
-    @Column({
-        unique: true,
-        length: 30,
-    })
-    slotNumber!: string;
+  /**
+   * Visible slot number.
+   */
+  @Field()
+  @Column({
+    unique: true,
+    length: 30,
+  })
+  slotNumber!: string;
 
-    /**
-     * Slot type.
-     */
-    @Field(() => ParkingSlotType)
-    @Column({
-        type: 'enum',
-        enum: ParkingSlotType,
-    })
-    type!: ParkingSlotType;
+  /**
+   * Slot type.
+   */
+  @Field(() => ParkingSlotType)
+  @Column({
+    type: 'enum',
+    enum: ParkingSlotType,
+  })
+  type!: ParkingSlotType;
 
-    /**
-     * Current slot status.
-     */
-    @Field(() => ParkingSlotStatus)
-    @Column({
-        type: 'enum',
-        enum: ParkingSlotStatus,
-        default: ParkingSlotStatus.AVAILABLE,
-    })
-    status!: ParkingSlotStatus;
+  /**
+   * Current slot status.
+   */
+  @Field(() => ParkingSlotStatus)
+  @Column({
+    type: 'enum',
+    enum: ParkingSlotStatus,
+    default: ParkingSlotStatus.AVAILABLE,
+  })
+  status!: ParkingSlotStatus;
 
-    /**
-     * Whether the slot is enabled.
-     */
-    @Field()
-    @Column({
-        default: true,
-    })
-    isEnabled!: boolean;
+  /**
+   * Whether the slot is enabled.
+   */
+  @Field()
+  @Column({
+    default: true,
+  })
+  isEnabled!: boolean;
 
-    /**
-     * EV charger available.
-     */
-    @Field()
-    @Column({
-        default: false,
-    })
-    hasChargingStation!: boolean;
+  /**
+   * EV charger available.
+   */
+  @Field()
+  @Column({
+    default: false,
+  })
+  hasChargingStation!: boolean;
 
-    /**
-     * Maximum supported vehicle height (meters).
-     */
-    @Field(() => Float)
-    @Column({
-        type: 'decimal',
-        precision: 4,
-        scale: 2,
-        default: 2.50,
-    })
-    maximumHeight!: number;
+  /**
+   * Maximum supported vehicle height (meters).
+   */
+  @Field(() => Float)
+  @Column({
+    type: 'decimal',
+    precision: 4,
+    scale: 2,
+    default: 2.5,
+  })
+  maximumHeight!: number;
 
-    /**
-     * Floor relation.
-     */
-    @ManyToOne(
+  /**
+   * Floor relation.
+   */
+  @ManyToOne(
+    () => ParkingFloor,
 
-        () => ParkingFloor,
+    (floor) => floor.slots,
 
-        floor => floor.slots,
+    {
+      nullable: false,
+    },
+  )
+  floor!: ParkingFloor;
+  /**
+   * Parent zone.
+   */
+  @ManyToOne(() => ParkingZone, (zone: ParkingZone) => zone.slots, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  zone!: ParkingZone;
 
-        {
-            nullable: false,
-        },
+  /**
+   * Parking sessions that used this slot.
+   */
+  @OneToMany(() => ParkingTicket, (ticket: ParkingTicket) => ticket.slot)
+  tickets!: ParkingTicket[];
+  /**
+   * Created timestamp.
+   */
+  @Field()
+  @CreateDateColumn()
+  createdAt!: Date;
 
-    )
-    floor!: ParkingFloor;
-    /**
-     * Parent zone.
-     */
-    @ManyToOne(
-        () => ParkingZone,
-        (zone: ParkingZone) => zone.slots,
-        {
-            nullable: false,
-            onDelete: 'CASCADE',
-        },
-    )
-    zone!: ParkingZone;
-
-    /**
- * Parking sessions that used this slot.
- */
-    @OneToMany(
-        () => ParkingTicket,
-        (ticket: ParkingTicket) => ticket.slot,
-    )
-    tickets!: ParkingTicket[];
-    /**
-     * Created timestamp.
-     */
-    @Field()
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    /**
-     * Updated timestamp.
-     */
-    @Field()
-    @UpdateDateColumn()
-    updatedAt!: Date;
+  /**
+   * Updated timestamp.
+   */
+  @Field()
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

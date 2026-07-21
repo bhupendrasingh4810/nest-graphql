@@ -1,7 +1,4 @@
-import {
-    Field,
-    ObjectType,
-} from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 import { User } from '../../users/entities/user.entity';
 
@@ -10,17 +7,15 @@ import { User } from '../../users/entities/user.entity';
  */
 @ObjectType()
 export class LoginResponse {
+  /**
+   * JWT Access Token.
+   */
+  @Field()
+  accessToken!: string;
 
-    /**
-     * JWT Access Token.
-     */
-    @Field()
-    accessToken!: string;
-
-    /**
-     * Logged in user.
-     */
-    @Field(() => User)
-    user!: User;
-
+  /**
+   * Logged in user.
+   */
+  @Field(() => User)
+  user!: User;
 }
